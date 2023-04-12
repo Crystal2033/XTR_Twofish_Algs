@@ -77,9 +77,25 @@ namespace XTR_TwofishAlgs.HelpFunctions
         {
             leftPart = new byte[(int)Math.Ceiling((double)leftBlockSize / (double)CryptConstants.BITS_IN_BYTE)];
             rightPart = new byte[(int)Math.Ceiling((double)rightBlockSize / (double)CryptConstants.BITS_IN_BYTE)];
-            SetRangeOfBits(startBytes, 0, 0, leftBlockSize, ref leftPart, 0, 0);
+            SetRangeOfBits(startBytes, 0, 0, leftBlockSize, leftPart, 0, 0);
             SetRangeOfBits(startBytes, leftBlockSize / CryptConstants.BITS_IN_BYTE, (byte)(leftBlockSize % CryptConstants.BITS_IN_BYTE),
-                rightBlockSize, ref rightPart, 0, 0);
+                rightBlockSize, rightPart, 0, 0);
+        }
+
+        public static List<byte[]> SliceArrayOnArrays(in byte[] plainText, int valueOfBitsInText, int valueOfBlocks)
+        {
+            ShowBinaryView(plainText, " Plain text");
+            int valueBitsInSlicedText = valueOfBitsInText / valueOfBlocks;
+            int valueOfBytesInBlock = (int)Math.Ceiling((double)valueBitsInSlicedText / (double)CryptConstants.BITS_IN_BYTE);
+            List<byte[]> slicedBytes = new();
+            for(int i = 0; i < valueOfBlocks; i++)
+            {
+                slicedBytes.Add(new byte[valueOfBytesInBlock]);
+                SetRangeOfBits(plainText, i * valueBitsInSlicedText / CryptConstants.BITS_IN_BYTE,
+                    (byte)(valueBitsInSlicedText % CryptConstants.BITS_IN_BYTE), valueBitsInSlicedText, slicedBytes[i], 0, 0);
+                ShowBinaryView(slicedBytes[i]);
+            }
+            return slicedBytes;
         }
 
         public static byte[] CycleLeftShift(in byte[] bytes, int sizeInBits, int leftShiftValue)
@@ -88,9 +104,9 @@ namespace XTR_TwofishAlgs.HelpFunctions
             byte[] result = new byte[bytes.Length];
 
             SetRangeOfBits(bytes, leftShiftValue / CryptConstants.BITS_IN_BYTE, (byte)(leftShiftValue % CryptConstants.BITS_IN_BYTE),
-                sizeInBits - leftShiftValue, ref result, 0, 0);
+                sizeInBits - leftShiftValue, result, 0, 0);
 
-            SetRangeOfBits(bytes, 0, 0, leftShiftValue, ref result,
+            SetRangeOfBits(bytes, 0, 0, leftShiftValue, result,
                 (sizeInBits - leftShiftValue) / CryptConstants.BITS_IN_BYTE, (byte)((sizeInBits - leftShiftValue) % CryptConstants.BITS_IN_BYTE));
             return result;
         }
@@ -112,8 +128,21 @@ namespace XTR_TwofishAlgs.HelpFunctions
         public static byte[] ConcatTwoBitParts(in byte[] leftPart, int leftSize, in byte[] rightPart, int rightSize)
         {
             byte[] concatArr = new byte[(int)Math.Ceiling(((double)(leftSize + rightSize)) / (double)(CryptConstants.BITS_IN_BYTE))];
-            SetRangeOfBits(leftPart, 0, 0, leftSize, ref concatArr, 0, 0);
-            SetRangeOfBits(rightPart, 0, 0, rightSize, ref concatArr, leftSize / CryptConstants.BITS_IN_BYTE, (byte)(leftSize % CryptConstants.BITS_IN_BYTE));
+            SetRangeOfBits(leftPart, 0, 0, leftSize, concatArr, 0, 0);
+            SetRangeOfBits(rightPart, 0, 0, rightSize, concatArr, leftSize / CryptConstants.BITS_IN_BYTE, (byte)(leftSize % CryptConstants.BITS_IN_BYTE));
+            return concatArr;
+        }
+
+        public static byte[] ConcatBitParts(List<byte[]> parts, int bitSize)
+        {
+            byte[] concatArr = new byte[(int)Math.Ceiling(((double)(parts.Count * bitSize)) / (double)(CryptConstants.BITS_IN_BYTE))];
+            for(int i =0; i < parts.Count; i++)
+            {
+                SetRangeOfBits(parts[i], 0, 0, bitSize, concatArr, i * bitSize / CryptConstants.BITS_IN_BYTE, (byte)((i * bitSize) % CryptConstants.BITS_IN_BYTE));
+            }
+            ShowBinaryView(concatArr);
+            //SetRangeOfBits(leftPart, 0, 0, leftSize, concatArr, 0, 0);
+            //SetRangeOfBits(rightPart, 0, 0, rightSize, concatArr, leftSize / CryptConstants.BITS_IN_BYTE, (byte)(leftSize % CryptConstants.BITS_IN_BYTE));
             return concatArr;
         }
 
@@ -127,7 +156,7 @@ namespace XTR_TwofishAlgs.HelpFunctions
          * startBitTo copyTo start BIT to copy from 0 to 7 little-endian (0 1 2 3 4 5 6 7)
          */
         public static void SetRangeOfBits(in byte[] copyFrom, int startByteFrom, byte startBitFrom, int valueOfBits,
-                                         ref byte[] copyTo, int startByteTo, byte startBitTo)
+                                         byte[] copyTo, int startByteTo, byte startBitTo)
         {
             for (int i = 0; i < valueOfBits; i++)
             {

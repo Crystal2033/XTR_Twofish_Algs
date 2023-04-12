@@ -34,20 +34,18 @@ namespace XTR_TWOFISH.FeistelImplementation
 
         public byte[] Execute(in byte[] partOfText, int sizeInBits, CryptOperation cryptStatus)
         {
-            CryptSimpleFunctions.SliceArrayOnTwoArrays(partOfText, sizeInBits / 2, sizeInBits / 2, out byte[] leftPart, out byte[] rightPart);
-            byte[] nextLeftPart = default;
-            byte[] nextRightPart = default;
+            List<byte[]> slicedBlocks = CryptSimpleFunctions.SliceArrayOnArrays(partOfText, 128, 4);
 
-            for(int i = 0; i < _valueOfRaunds; i++){
-                nextLeftPart = (byte[])rightPart.Clone();
-                nextRightPart = CryptSimpleFunctions.XorByteArrays(leftPart, 
-                    FeistelFunction.FeistelFunction(ref rightPart, _raundKeys[(cryptStatus == CryptOperation.ENCRYPT) ? i : _valueOfRaunds - i -1], i));
+            //for(int i = 0; i < _valueOfRaunds; i++){
+            //    nextLeftPart = (byte[])rightPart.Clone();
+            //    nextRightPart = CryptSimpleFunctions.XorByteArrays(leftPart, 
+            //        FeistelFunction.FeistelFunction(ref rightPart, _raundKeys[(cryptStatus == CryptOperation.ENCRYPT) ? i : _valueOfRaunds - i -1], i));
 
-                leftPart = nextLeftPart;
-                rightPart = nextRightPart;
-            }
+            //    leftPart = nextLeftPart;
+            //    rightPart = nextRightPart;
+            //}
 
-            return CryptSimpleFunctions.ConcatTwoBitParts(rightPart, sizeInBits / 2, leftPart, sizeInBits / 2);
+            return CryptSimpleFunctions.ConcatBitParts(slicedBlocks, 32);
         }
 
     }
