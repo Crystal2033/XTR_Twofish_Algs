@@ -9,6 +9,6 @@ namespace XTR_TWOFISH.CryptInterfaces
 {
     public interface IKeyExpansion
     {
-        public List<byte[]> GenerateRoundKeys(byte[] preparedKey, TwoFishKeySizes keySizeInBits, out List<byte> sBoxes);
+        public List<byte[]> GenerateRoundKeys(byte[] preparedKey, TwoFishKeySizes keySizeInBits, out List<byte[]> sBoxes);
     }
 }

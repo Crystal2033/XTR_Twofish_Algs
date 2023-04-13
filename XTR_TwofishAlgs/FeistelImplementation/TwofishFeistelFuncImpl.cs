@@ -8,13 +8,14 @@ using XTR_TwofishAlgs.HelpFunctions;
 
 namespace XTR_TwofishAlgs.FeistelImplementation
 {
-    internal class TwofishFeistelImpl : IFeistelFunction
+    internal class TwofishFeistelFuncImpl : IFeistelFunction
     {
         public byte[] FeistelFunction(ref byte[] R0, ref byte[] R1, in byte[] raundKey, int raundNumber)
         {
             byte[] T0 = gFunction(R0);
             byte[] T1 = gFunction(CryptSimpleFunctions.CycleLeftShift(R1, 32, 8));
-            throw new NotImplementedException();
+
+            return new byte[1];
         }
 
         private byte[] gFunction(byte[] bytes) //bytes here is 32 bits value (1/4 from part of plain text)
