@@ -8,6 +8,6 @@ namespace XTR_TWOFISH.CryptInterfaces
 {
     public interface IFeistelFunction
     {
-        public byte[] FeistelFunction(ref byte[] bytes, in byte[] raundKey, int raundNumber);//raundNumber to get needed raund key
+        public byte[] FeistelFunction(ref byte[] R0, ref byte[] R1, in byte[] raundKey, int raundNumber);//raundNumber to get needed raund key
     }
 }

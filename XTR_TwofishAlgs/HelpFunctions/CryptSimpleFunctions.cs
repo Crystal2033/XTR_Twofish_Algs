@@ -129,6 +129,19 @@ namespace XTR_TwofishAlgs.HelpFunctions
             return result;
         }
 
+        public static byte[] CycleRightShift(in byte[] bytes, int sizeInBits, int rightShiftValue)
+        {
+            rightShiftValue = rightShiftValue % sizeInBits;
+            byte[] result = new byte[bytes.Length];
+
+            SetRangeOfBits(bytes, (sizeInBits - rightShiftValue) / CryptConstants.BITS_IN_BYTE, (byte)((sizeInBits - rightShiftValue) % CryptConstants.BITS_IN_BYTE),
+                rightShiftValue, result, 0, 0);
+
+            SetRangeOfBits(bytes, 0, 0, sizeInBits - rightShiftValue, result,
+                rightShiftValue / CryptConstants.BITS_IN_BYTE, (byte)(rightShiftValue % CryptConstants.BITS_IN_BYTE));
+            return result;
+        }
+
 
         public static byte[] XorByteArrays(in byte[] first, in byte[] second)
         {
