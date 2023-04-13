@@ -23,6 +23,24 @@ namespace XTR_TwofishAlgs.HelpFunctions
             Console.WriteLine();
             Console.WriteLine("---------------------------------------------");
         }
+
+        public static void ShowBinaryView(in byte viewByte, in string message = "")
+        {
+            Console.WriteLine("---------------------------------------------");
+            Console.WriteLine(message);
+            Console.Write(Convert.ToString(viewByte, 2).PadLeft(CryptConstants.BITS_IN_BYTE, '0'));
+            Console.WriteLine();
+            Console.WriteLine("---------------------------------------------");
+        }
+
+        public static void ShowBinaryView(in int viewByte, in string message = "")
+        {
+            Console.WriteLine("---------------------------------------------");
+            Console.WriteLine(message);
+            Console.Write(Convert.ToString(viewByte, 2).PadLeft(CryptConstants.BITS_IN_BYTE, '0'));
+            Console.WriteLine();
+            Console.WriteLine("---------------------------------------------");
+        }
         public static void ClearBytes(ref byte[] bytes, int startFrom = 0)
         {
             for (int i = startFrom; i < bytes.Length; i++)

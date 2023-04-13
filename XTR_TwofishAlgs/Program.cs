@@ -1,5 +1,7 @@
 ﻿using XTR_TWOFISH.CryptInterfaces;
 using XTR_TWOFISH.FeistelImplementation;
+using XTR_TwofishAlgs.HelpFunctions;
+using XTR_TwofishAlgs.MathBase.GF256;
 
 internal class Program
 {
@@ -13,9 +15,19 @@ internal class Program
         IFeistelFunction feistelFunction = null;
 
         FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction);
-        feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
+        //feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
         //ISymmetricEncryption desImpl = new DESImplementation(feistelKernel);
 
+        GF256 a = 87;
+        GF256 b = 131;
+        CryptSimpleFunctions.ShowBinaryView(a.Value, "A= ");
+        CryptSimpleFunctions.ShowBinaryView(b.Value, "B= ");
+        CryptSimpleFunctions.ShowBinaryView((a + b).Value, "A + B= ");
+        CryptSimpleFunctions.ShowBinaryView((a * b).Value, "A * B= ");
+        CryptSimpleFunctions.ShowBinaryView(GF256.Mult(a, b, IrreduciblePolynoms.X8X4X3X_1).Value, "(A * B)= mod X^4 + X + 1");
+        //Console.WriteLine(a + b);
+        //Console.WriteLine(a*b);
+        //Console.WriteLine(GF256.Mult(a, b));
 
     }
 }
