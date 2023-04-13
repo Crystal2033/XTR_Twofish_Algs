@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XTR_TwofishAlgs.MathBase.GF256
+namespace XTR_TwofishAlgs.MathBase.GaluaField
 {
     public enum IrreduciblePolynoms
     {

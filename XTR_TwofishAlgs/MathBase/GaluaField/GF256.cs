@@ -5,16 +5,49 @@ using System.Text;
 using System.Threading.Tasks;
 using XTR_TwofishAlgs.HelpFunctions;
 
-namespace XTR_TwofishAlgs.MathBase.GF256
+namespace XTR_TwofishAlgs.MathBase.GaluaField
 {
-    internal class GF256
+    public sealed class GF256
     {
         public GF256(int value)
         {
             _value = value;
         }
 
-        private int _value;
+        public static byte[] getVectorFromGaluaVector(GF256[] galuaVector)
+        {
+            byte[] result = new byte[galuaVector.Length];
+            for (int i = 0; i < galuaVector.Length; i++)
+            {
+                result[i] = (byte)galuaVector[i].Value;
+            }
+            return result;
+        }
+
+        public static GF256[] getGaluaVectorByByteVector(byte[] bytes)
+        {
+            GF256[] result = new GF256[bytes.Length];
+            for(int i =0; i < bytes.Length; i++)
+            {
+                result[i] = new GF256(bytes[i]);
+            }
+            return result;
+        }
+
+        public static GF256[,] getGaluaMatrixByByteMatrix(byte[,] bytes)
+        {
+            GF256[,] result = new GF256[bytes.Length, bytes.GetLength(0)];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                for (int j = 0; j < bytes.GetLength(i); j++)
+                {
+                    result[i,j] = new GF256(bytes[i,j]);
+                }
+            }
+            return result;
+        }
+
+        private int _value = 0;
         public int Value { get => _value; set => _value = value; }
 
         public static GF256 operator +(GF256 left, GF256 right)
