@@ -177,6 +177,18 @@ namespace XTR_TwofishAlgs.HelpFunctions
             return concatArr;
         }
 
+        public static byte[] ConcatBitParts(params byte[] parts)
+        {
+            byte[] concatArray = new byte[parts.Length];
+            for(int i = 0; i < parts.Length; i++)
+            {
+                concatArray[i] = parts[i];
+            }
+            return concatArray;
+        }
+
+
+
         /**
          * copyFrom byte array from which copying bits
          * startByteFrom copyFrom start BYTE to copy

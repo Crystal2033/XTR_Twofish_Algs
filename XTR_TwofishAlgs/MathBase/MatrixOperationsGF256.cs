@@ -25,7 +25,7 @@ namespace XTR_TwofishAlgs.MathBase
                 }
             }
 
-            return result;
+            return result; //out 4 bytes
         }
     }
 }
