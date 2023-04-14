@@ -60,5 +60,7 @@ namespace XTR_TWOFISH.FeistelImplementation
             return CryptSimpleFunctions.ConcatBitParts(slicedBlocks, 32);
         }
 
+
+        
     }
 }

@@ -142,6 +142,55 @@ namespace XTR_TwofishAlgs.HelpFunctions
             return result;
         }
 
+        public static byte CycleRightShiftInByte(byte myByte, int leftEdge, int rightEdge, int shiftValue) //[leftEdge, rightEdge)
+        {
+            //CryptSimpleFunctions.ShowBinaryView(myByte);
+            shiftValue = shiftValue % (rightEdge - leftEdge);
+            byte resultByte = 0;
+            resultByte = ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge);
+            //CryptSimpleFunctions.ShowBinaryView(resultByte);
+            resultByte = (byte)((resultByte << (rightEdge - leftEdge - shiftValue)) | (resultByte >> shiftValue)); //shifting in small range of bits in byte
+            resultByte = ShakeAndDropNotNeededNitsInByte(resultByte, leftEdge, rightEdge);
+            //CryptSimpleFunctions.ShowBinaryView(resultByte);
+            //CryptSimpleFunctions.ShowBinaryView(ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+            //CryptSimpleFunctions.ShowBinaryView(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+
+            return (byte)(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+        }
+
+        private static byte ShakeAndDropNotNeededNitsInByte(byte myByte, int leftEdge, int rightEdge, bool removeInsideRange=false)///deleting not needed bits
+        {
+            byte tmp = 0;
+            if (removeInsideRange)
+            {
+                //ShowBinaryView((myByte >> (8 - leftEdge) | 0) << (8 - leftEdge));
+                //ShowBinaryView((byte)(myByte << rightEdge) | 0);
+                var tmp1 = (byte)(myByte >> (8 - leftEdge) | 0) << (8 - leftEdge);
+                var tmp2 = (byte)(((myByte << rightEdge) | 0));
+
+                tmp = (byte)(tmp1 | (tmp2 >> rightEdge));
+                //ShowBinaryView(tmp);
+                return (byte)(tmp);
+            }
+            tmp = (byte)((((myByte >> (8 - rightEdge) | 0) << (8 - (rightEdge - leftEdge))) | 0));
+            return (byte)(tmp >> leftEdge);
+        }
+        public static byte CycleLeftShiftInByte(byte myByte, int leftEdge, int rightEdge, int shiftValue) //[leftEdge, rightEdge)
+        {
+            CryptSimpleFunctions.ShowBinaryView(myByte);
+            shiftValue = shiftValue % (rightEdge - leftEdge);
+            byte resultByte = 0;
+            resultByte = ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge);
+            CryptSimpleFunctions.ShowBinaryView(resultByte);
+            resultByte = (byte)((resultByte >> (rightEdge - leftEdge - shiftValue)) | (resultByte << shiftValue)); //shifting in small range of bits in byte
+            resultByte = ShakeAndDropNotNeededNitsInByte(resultByte, leftEdge, rightEdge);
+            CryptSimpleFunctions.ShowBinaryView(resultByte);
+            CryptSimpleFunctions.ShowBinaryView(ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+            CryptSimpleFunctions.ShowBinaryView(myByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+
+            return (byte)(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+        }
+
 
         public static byte[] XorByteArrays(in byte[] first, in byte[] second)
         {
