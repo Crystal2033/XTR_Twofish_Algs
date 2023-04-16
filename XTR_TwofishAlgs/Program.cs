@@ -4,6 +4,7 @@ using XTR_TwofishAlgs.FeistelImplementation;
 using XTR_TwofishAlgs.HelpFunctions;
 using XTR_TwofishAlgs.KeySchedule;
 using XTR_TwofishAlgs.MathBase.GaloisField;
+using XTR_TwofishAlgs.TwoFish;
 using static XTR_TwofishAlgs.HelpFunctions.CryptConstants;
 
 internal class Program
@@ -22,14 +23,12 @@ internal class Program
         IKeyExpansion keyExpansion = new KeyExpansionTwoFish();
         IFeistelFunction feistelFunction = new TwofishFeistelFuncImpl();
         byte testByte = 87;
-        CryptSimpleFunctions.ShowBinaryView(CryptSimpleFunctions.CycleRightShiftInByte(testByte, 0,4,1), "Right shift");
-        CryptSimpleFunctions.ShowBinaryView(CryptSimpleFunctions.CycleRightShiftInByte(testByte, 4, 8, 1), "Right shift");
+
         //FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction, TwoFishKeySizes.EASY) { MainKey = mainKey};
         //feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
         //feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
         //ISymmetricEncryption desImpl = new DESImplementation(feistelKernel);
-        CryptSimpleFunctions.ShowBinaryView(mainKey, "Mainkey before");
-        CryptSimpleFunctions.ShowBinaryView(CryptSimpleFunctions.CycleRightShift(mainKey, 7 * 8, 7*4), "MainKey after");
+        TwoFishFunctions.q0Function(testByte);
 
         //GF256 a = 87;
         //GF256 b = 131;

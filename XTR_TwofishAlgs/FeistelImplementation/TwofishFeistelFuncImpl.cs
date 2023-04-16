@@ -21,6 +21,7 @@ namespace XTR_TwofishAlgs.FeistelImplementation
         private byte[] gFunction(byte[] bytes) //bytes here is 32 bits value (1/4 from part of plain text)
         {
             List<byte[]> splitedBytes = CryptSimpleFunctions.SliceArrayOnArrays(bytes, 32, 4);
+            //TwoFish.TwoFishFunctions.hFunction()
             return new byte[10];
         }
     }
