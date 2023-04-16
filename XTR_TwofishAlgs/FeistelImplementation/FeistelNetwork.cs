@@ -46,7 +46,7 @@ namespace XTR_TWOFISH.FeistelImplementation
 
         public byte[] Execute(in byte[] partOfText, int sizeInBits, CryptOperation cryptStatus)
         {
-            List<byte[]> slicedBlocks = CryptSimpleFunctions.SliceArrayOnArrays(partOfText, 128, 4);
+            List<byte[]> slicedBlocks = CryptSimpleFunctions.SliceArrayOnArrays(partOfText, 128, 4); //4 bytes in each block
 
             //for(int i = 0; i < _valueOfRaunds; i++){
             //    nextLeftPart = (byte[])rightPart.Clone();

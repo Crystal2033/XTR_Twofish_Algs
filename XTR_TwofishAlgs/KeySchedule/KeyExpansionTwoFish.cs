@@ -21,6 +21,8 @@ namespace XTR_TwofishAlgs.KeySchedule
 
             (List<byte[]> sBlock, (List<byte[]> Mo, List<byte[]> Me)) = getBasisOfKeySchedule(mainKey, keySizeInBits);
             sBoxes = sBlock;
+
+            //TODO: with ro=2^24 + 2^16 + 2^8 + 2^0...
             return roundKeys;
         }
 
