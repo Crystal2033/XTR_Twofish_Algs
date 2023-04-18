@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using XTR_TWOFISH.CryptInterfaces;
 using XTR_TwofishAlgs.HelpFunctions;
 using XTR_TwofishAlgs.MathBase;
 using XTR_TwofishAlgs.MathBase.GaloisField;
+using XTR_TwofishAlgs.TwoFish;
 using static XTR_TwofishAlgs.HelpFunctions.CryptConstants;
 
 //https://www.schneier.com/wp-content/uploads/2016/02/paper-twofish-paper.pdf  page 8
@@ -23,7 +25,30 @@ namespace XTR_TwofishAlgs.KeySchedule
             sBoxes = sBlock;
 
             //TODO: with ro=2^24 + 2^16 + 2^8 + 2^0...
+            // we need 40 keys! 0..39
+            for(byte i = 0; i < 20; i++)
+            {
+                byte[] Ai = TwoFishFunctions.hFunction(getFilledBytesWithNumber(4, 2 * i), Me, keySizeInBits);
+                byte[] Bi = CryptSimpleFunctions.CycleLeftShift(TwoFishFunctions.hFunction(getFilledBytesWithNumber(4, (2 * i) + 1), Mo, keySizeInBits), 32, 8);
+                (byte[]newA, byte[] newB) = TwoFishFunctions.PseudoHadamardTransforms(Ai, Bi);
+                byte[] K2i = newA;
+                byte[] K2iPlus1 = CryptSimpleFunctions.CycleLeftShift(newB, 32, 9);
+                CryptSimpleFunctions.ShowBinaryView(K2i, $"Key[{2 * i}]");
+                CryptSimpleFunctions.ShowBinaryView(K2iPlus1, $"Key[{2 * i + 1}]");
+                roundKeys.Add(K2i);
+                roundKeys.Add(K2iPlus1);
+            }
             return roundKeys;
+        }
+
+        private byte[] getFilledBytesWithNumber(int valueOfBytes, int number)
+        {
+            byte[] result = new byte[valueOfBytes];
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = (byte)number;
+            }
+            return result;
         }
 
         private (List<byte[]> totalSBlock, (List<byte[]> Mo, List<byte[]> Me)) getBasisOfKeySchedule(byte[] mainKey, TwoFishKeySizes keySizeInBits) 

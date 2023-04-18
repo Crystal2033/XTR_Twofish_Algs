@@ -88,9 +88,43 @@ namespace XTR_TwofishAlgs.TwoFish
             return qFunctionGeneral(x, TwoFishMatrixes.Q1TMatrix); ;
         }
 
+        /// <summary>
+        /// a' = a+b mod32
+        /// b' = a+2b mod32
+        /// </summary>
+        /// <param name="a">a value</param>
+        /// <param name="b">b value</param>
+        /// <returns>(a',b')</returns>
+        public static (byte[], byte[]) PseudoHadamardTransforms(byte[] a, byte[] b)
+        {
+            byte[] newA = new byte[4];
+            byte[] newB = new byte[4];
+            //CryptSimpleFunctions.ShowBinaryView(a, "a");
+            int aInt = CryptSimpleFunctions.FromBytesToInt(a, 32);
+            //CryptSimpleFunctions.ShowBinaryView(aInt, "aInt");
+            //CryptSimpleFunctions.ShowBinaryView(b, "b");
+            int bInt = CryptSimpleFunctions.FromBytesToInt(b, 32);
+            //CryptSimpleFunctions.ShowBinaryView(bInt, "bInt");
+            newA = fromIntToBytes(aInt + bInt);
+            //CryptSimpleFunctions.ShowBinaryView(newA, "newA");
+            newB = fromIntToBytes(aInt + 2*bInt);
+           //CryptSimpleFunctions.ShowBinaryView(newB, "newB");
+            return (newA, newB);
+        }
+
+        public static byte[] fromIntToBytes(int value)
+        {
+            byte[] bytes = new byte[4];
+
+            bytes[0] = (byte)((value >> 24) & 0xFF);
+            bytes[1] = (byte)((value >> 16) & 0xFF);
+            bytes[2] = (byte)((value >> 8) & 0xFF);
+            bytes[3] = (byte)(value & 0xFF);
+            return bytes;
+        }
         public static byte qFunctionGeneral(byte x, byte[,] tMatrix)//q1 is the same, but different tMatrix
         {
-            CryptSimpleFunctions.ShowBinaryView(x, "X");
+            //CryptSimpleFunctions.ShowBinaryView(x, "X");
             byte a0 = (byte)(x / 16);
             //CryptSimpleFunctions.ShowBinaryView(a0, "a0");
             byte b0 = (byte)(x % 16);

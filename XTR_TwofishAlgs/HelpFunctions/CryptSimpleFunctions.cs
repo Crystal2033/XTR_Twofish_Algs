@@ -41,6 +41,19 @@ namespace XTR_TwofishAlgs.HelpFunctions
             Console.WriteLine();
             Console.WriteLine("---------------------------------------------");
         }
+
+        public static int FromBytesToInt(byte[] bytes, int valueOfBits)
+        {
+            int result = 0;
+            for(int i = 0; i < valueOfBits; i++)
+            {
+                byte myBit = GetBitFromPos(bytes[i / 8], (byte)(i % 8));
+
+                result = (result << 1) | GetBitFromPos(bytes[i / 8], (byte)(i % 8));
+                //CryptSimpleFunctions.ShowBinaryView(result, "result");
+            }
+            return result;
+        }
         public static void ClearBytes(ref byte[] bytes, int startFrom = 0)
         {
             for (int i = startFrom; i < bytes.Length; i++)
