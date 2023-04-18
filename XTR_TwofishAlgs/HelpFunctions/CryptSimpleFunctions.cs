@@ -204,7 +204,15 @@ namespace XTR_TwofishAlgs.HelpFunctions
             return (byte)(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
         }
 
-
+        public static byte[] RevertBytes(byte[] bytes)
+        {
+            byte[] newBytes = new byte[bytes.Length];
+            for (int i = 0; i < newBytes.Length; i++)
+            {
+                newBytes[i] = bytes[bytes.Length - i - 1];
+            }
+            return newBytes;
+        }
         public static byte[] XorByteArrays(in byte[] first, in byte[] second)
         {
             if (first.Length != second.Length)

@@ -110,8 +110,8 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         public static int divideByColumn(int dividing, int divider)
         {
             int nextDivider2DegreeGreater = getHighest2DegreeValue(divider);
-
-            while (dividing > divider)
+            int maxFieldValue = 1 << nextDivider2DegreeGreater;
+            while (dividing > maxFieldValue)
             {
                 //CryptSimpleFunctions.ShowBinaryView(dividing, "dividing");
                 //CryptSimpleFunctions.ShowBinaryView(divider << ((getHighest2DegreeValue(dividing) - nextDivider2DegreeGreater)), "shifted divider");

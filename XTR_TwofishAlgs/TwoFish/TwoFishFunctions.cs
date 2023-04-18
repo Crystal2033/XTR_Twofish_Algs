@@ -46,34 +46,42 @@ namespace XTR_TwofishAlgs.TwoFish
                 connectBytes = CryptSimpleFunctions.XorByteArrays(firstBlockRes, sBox[2]);
             }
             //k >=2
-            
-            byte[] secondBlockRes = new byte[4]
-            { 
-                q1Function(connectBytes[0]),
-                q0Function(connectBytes[1]),
-                q1Function(connectBytes[2]),
-                q0Function(connectBytes[3])
-            };
 
-            connectBytes = CryptSimpleFunctions.XorByteArrays(secondBlockRes, sBox[1]);
+            //byte[] secondBlockRes = new byte[4]
+            //{
+            //    q1Function(connectBytes[3]),
+            //    q0Function(connectBytes[2]),
+            //    q1Function(connectBytes[1]),
+            //    q0Function(connectBytes[0])
+            //};
 
-            byte[] thirdBlockRes = new byte[4]
+            //connectBytes = CryptSimpleFunctions.XorByteArrays(secondBlockRes, sBox[1]);
+
+            //byte[] thirdBlockRes = new byte[4]
+            //{
+            //    q1Function(connectBytes[3]),
+            //    q1Function(connectBytes[2]),
+            //    q0Function(connectBytes[1]),
+            //    q0Function(connectBytes[0])
+            //};
+            //connectBytes = CryptSimpleFunctions.XorByteArrays(thirdBlockRes, sBox[0]);
+
+            //byte[] fourthBlockRes = new byte[4]
+            //{
+            //    q0Function(connectBytes[3]),
+            //    q1Function(connectBytes[2]),
+            //    q0Function(connectBytes[1]),
+            //    q1Function(connectBytes[0])
+            //};
+
+            byte[] result = new byte[4]
             {
-                q1Function(connectBytes[0]),
-                q1Function(connectBytes[1]),
-                q0Function(connectBytes[2]),
-                q0Function(connectBytes[3])
+                q1Function((byte)(q0Function((byte)(q0Function(connectBytes[3]) ^ sBox[1][3])) ^ sBox[0][3])),
+                q0Function((byte)(q0Function((byte)(q1Function(connectBytes[2]) ^ sBox[1][2])) ^ sBox[0][2])),
+                q1Function((byte)(q1Function((byte)(q0Function(connectBytes[1]) ^ sBox[1][1])) ^ sBox[0][1])),
+                q0Function((byte)(q1Function((byte)(q1Function(connectBytes[0]) ^ sBox[1][0])) ^ sBox[0][0]))
             };
-            connectBytes = CryptSimpleFunctions.XorByteArrays(thirdBlockRes, sBox[0]);
-
-            byte[] fourthBlockRes = new byte[4]
-            {
-                q0Function(connectBytes[0]),
-                q1Function(connectBytes[1]),
-                q0Function(connectBytes[2]),
-                q1Function(connectBytes[3])
-            };
-            byte[] zVector = MatrixOperationsGF256.multMatrixesTwoFish(TwoFishMatrixes.MDS, fourthBlockRes, MathBase.GaloisField.IrreduciblePolynoms.X8X6X5X3_1);
+            byte[] zVector = MatrixOperationsGF256.multMatrixesTwoFish(TwoFishMatrixes.MDS, result, MathBase.GaloisField.IrreduciblePolynoms.X8X6X5X3_1);
             return zVector;
         }
 
@@ -124,37 +132,37 @@ namespace XTR_TwofishAlgs.TwoFish
         }
         public static byte qFunctionGeneral(byte x, byte[,] tMatrix)//q1 is the same, but different tMatrix
         {
-            //CryptSimpleFunctions.ShowBinaryView(x, "X");
+            CryptSimpleFunctions.ShowBinaryView(x, "X");
             byte a0 = (byte)(x / 16);
-            //CryptSimpleFunctions.ShowBinaryView(a0, "a0");
+            CryptSimpleFunctions.ShowBinaryView(a0, "a0");
             byte b0 = (byte)(x % 16);
-            //CryptSimpleFunctions.ShowBinaryView(b0, "b0");
+            CryptSimpleFunctions.ShowBinaryView(b0, "b0");
             byte a1 = (byte)(a0 ^ b0);
             
             byte b1 = (byte)(a0 ^ CryptSimpleFunctions.CycleRightShiftInByte(b0, 4, 8, 1) ^ 8 * a0 % 16);
 
-            //CryptSimpleFunctions.ShowBinaryView(b1, "b0");
+            CryptSimpleFunctions.ShowBinaryView(b1, "b1");
             byte a2 = tMatrix[0, a1];
-            //CryptSimpleFunctions.ShowBinaryView(a2, "a2");
+            CryptSimpleFunctions.ShowBinaryView(a2, "a2");
             byte b2 = tMatrix[1, b1];
-            //CryptSimpleFunctions.ShowBinaryView(b2, "b2");
+            CryptSimpleFunctions.ShowBinaryView(b2, "b2");
 
             byte a3 = (byte)(a2 ^ b2);
-            //CryptSimpleFunctions.ShowBinaryView(a3, "a3 = a2 ^ b2");
+            CryptSimpleFunctions.ShowBinaryView(a3, "a3 = a2 ^ b2");
 
-            //CryptSimpleFunctions.ShowBinaryView(CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1), "ROR4(b2,1)");
-            //CryptSimpleFunctions.ShowBinaryView(a2 ^ CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1), "a2 ^ ROR4(b2,1)");
-            //CryptSimpleFunctions.ShowBinaryView(8 * a2 % 16, "8 * a2 % 16");
-            //CryptSimpleFunctions.ShowBinaryView(a2 ^ CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1) ^ (8 * a2) % 16, "a2 ^ ROR4(b2,1) ^ 8 * a2 % 16");
+            CryptSimpleFunctions.ShowBinaryView(CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1), "ROR4(b2,1)");
+            CryptSimpleFunctions.ShowBinaryView(a2 ^ CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1), "a2 ^ ROR4(b2,1)");
+            CryptSimpleFunctions.ShowBinaryView(8 * a2 % 16, "8 * a2 % 16");
+            CryptSimpleFunctions.ShowBinaryView(a2 ^ CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1) ^ (8 * a2) % 16, "a2 ^ ROR4(b2,1) ^ 8 * a2 % 16");
             byte b3 = (byte)(a2 ^ CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1) ^ 8 * a2 % 16);
 
             byte a4 = tMatrix[2, a3];
             byte b4 = tMatrix[3, b3];
-            //CryptSimpleFunctions.ShowBinaryView(a4, "a4");
-            //CryptSimpleFunctions.ShowBinaryView(b4, "b4");
+            CryptSimpleFunctions.ShowBinaryView(a4, "a4");
+            CryptSimpleFunctions.ShowBinaryView(b4, "b4");
 
             byte y = (byte)(16 * b4 + a4);
-            //CryptSimpleFunctions.ShowBinaryView(y, "y");
+            CryptSimpleFunctions.ShowBinaryView(y, "y");
             return y;
         }
     }

@@ -30,7 +30,7 @@ namespace XTR_TwofishAlgs.KeySchedule
             {
                 byte[] Ai = TwoFishFunctions.hFunction(getFilledBytesWithNumber(4, 2 * i), Me, keySizeInBits);
                 byte[] Bi = CryptSimpleFunctions.CycleLeftShift(TwoFishFunctions.hFunction(getFilledBytesWithNumber(4, (2 * i) + 1), Mo, keySizeInBits), 32, 8);
-                (byte[]newA, byte[] newB) = TwoFishFunctions.PseudoHadamardTransforms(Ai, Bi);
+                (byte[]newA, byte[] newB) = TwoFishFunctions.PseudoHadamardTransforms(CryptSimpleFunctions.RevertBytes(Ai), CryptSimpleFunctions.RevertBytes(Bi));
                 byte[] K2i = newA;
                 byte[] K2iPlus1 = CryptSimpleFunctions.CycleLeftShift(newB, 32, 9);
                 CryptSimpleFunctions.ShowBinaryView(K2i, $"Key[{2 * i}]");
@@ -40,6 +40,8 @@ namespace XTR_TwofishAlgs.KeySchedule
             }
             return roundKeys;
         }
+
+        
 
         private byte[] getFilledBytesWithNumber(int valueOfBytes, int number)
         {

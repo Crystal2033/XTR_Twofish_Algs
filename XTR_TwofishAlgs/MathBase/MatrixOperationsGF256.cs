@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XTR_TwofishAlgs.HelpFunctions;
 using XTR_TwofishAlgs.MathBase.GaloisField;
 
 namespace XTR_TwofishAlgs.MathBase
@@ -20,7 +21,9 @@ namespace XTR_TwofishAlgs.MathBase
             {
                 for(int j = 0; j < matrix.GetLength(1); j++)
                 {
-                    resultGalua[i] = resultGalua[i] + GF256.Mult(galuaMatrix[i, j],  galuaVector[j], polynom);
+                    GF256 galoisRes = GF256.Mult(galuaMatrix[i, j], galuaVector[j], polynom);
+                    CryptSimpleFunctions.ShowBinaryView(galoisRes.Value, "Galois res after mult");
+                    resultGalua[i] = resultGalua[i] + galoisRes;
                 }
                 result[i] = (byte)resultGalua[i].Value;
             }
