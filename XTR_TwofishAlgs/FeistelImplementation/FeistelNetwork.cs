@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using XTR_TwofishAlgs.HelpFunctions;
 using XTR_TwofishAlgs.KeySchedule;
 using static XTR_TwofishAlgs.HelpFunctions.CryptConstants;
+using XTR_TwofishAlgs.FeistelImplementation;
 
 namespace XTR_TWOFISH.FeistelImplementation
 {
@@ -47,17 +48,34 @@ namespace XTR_TWOFISH.FeistelImplementation
         public byte[] Execute(in byte[] partOfText, int sizeInBits, CryptOperation cryptStatus)
         {
             List<byte[]> slicedBlocks = CryptSimpleFunctions.SliceArrayOnArrays(partOfText, 128, 4); //4 bytes in each block
+            byte[] whitenM0 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[0], _raundKeys[0]); //whitening
+            byte[] whitenM1 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[1], _raundKeys[1]); //whitening
+            byte[] whitenM2 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[2], _raundKeys[2]); //whitening
+            byte[] whitenM3 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[3], _raundKeys[3]); //whitening
 
-            //for(int i = 0; i < _valueOfRaunds; i++){
-            //    nextLeftPart = (byte[])rightPart.Clone();
-            //    nextRightPart = CryptSimpleFunctions.XorByteArrays(leftPart, 
-            //        FeistelFunction.FeistelFunction(ref rightPart, _raundKeys[(cryptStatus == CryptOperation.ENCRYPT) ? i : _valueOfRaunds - i -1], i));
+            byte[] resR0 = whitenM0;
+            byte[] resR1 = whitenM1;
+            byte[] resR2 = whitenM2;
+            byte[] resR3 = whitenM3;
 
-            //    leftPart = nextLeftPart;
-            //    rightPart = nextRightPart;
-            //}
+            for (int i = 0; i < _valueOfRaunds; i++)
+            {
+                byte[] savedR0 = (byte[])resR0.Clone();
+                byte[] savedR1 = (byte[])resR1.Clone();
+                (byte[] F0, byte[] F1) = FeistelFunction.FeistelFunction(resR0, resR1, _raundKeys[2 * i + 8], _raundKeys[2 * i + 9], sBoxes, i);
+                resR0 = CryptSimpleFunctions.CycleRightShift(CryptSimpleFunctions.XorByteArrays(F0, resR2), 32, 1);
+                resR1 = CryptSimpleFunctions.XorByteArrays(CryptSimpleFunctions.CycleLeftShift(resR3, 32, 1), F1);
+                resR2 = savedR0;
+                resR3 = savedR1;
+            }
 
-            return CryptSimpleFunctions.ConcatBitParts(slicedBlocks, 32);
+            byte[] cipherResR0 = CryptSimpleFunctions.XorByteArrays(resR2, _raundKeys[4]); //whitening
+            byte[] cipherResR1 = CryptSimpleFunctions.XorByteArrays(resR3, _raundKeys[5]); //whitening
+            byte[] cipherResR2 = CryptSimpleFunctions.XorByteArrays(resR0, _raundKeys[6]); //whitening
+            byte[] cipherResR3 = CryptSimpleFunctions.XorByteArrays(resR1, _raundKeys[7]); //whitening
+            List<byte[]> cipherParts = new() { cipherResR0, cipherResR1, cipherResR2, cipherResR3 };
+
+            return CryptSimpleFunctions.ConcatBitParts(cipherParts, 32);
         }
 
 

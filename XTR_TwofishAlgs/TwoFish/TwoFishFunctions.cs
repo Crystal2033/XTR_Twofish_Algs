@@ -120,6 +120,13 @@ namespace XTR_TwofishAlgs.TwoFish
             return (newA, newB);
         }
 
+        public static byte[] SumMod32(byte[] first, byte[] second)
+        {
+            int firstInt = CryptSimpleFunctions.FromBytesToInt(first, 32);
+            int secondInt = CryptSimpleFunctions.FromBytesToInt(second, 32);
+            return fromIntToBytes(firstInt + secondInt);
+        }
+
         public static byte[] fromIntToBytes(int value)
         {
             byte[] bytes = new byte[4];
