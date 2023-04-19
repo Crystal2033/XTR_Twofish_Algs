@@ -24,7 +24,10 @@ internal class Program
         IFeistelFunction feistelFunction = new TwofishFeistelFuncImpl();
 
         FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction, TwoFishKeySizes.EASY) { MainKey = mainKey };
-        feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
+        byte[] cipher = feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
+
+        byte[] pt = feistelKernel.Execute(cipher, 128, XTR_TWOFISH.CypherEnums.CryptOperation.DECRYPT);
+
 
 
         //feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);

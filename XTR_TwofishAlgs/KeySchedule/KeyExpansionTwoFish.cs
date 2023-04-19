@@ -67,7 +67,7 @@ namespace XTR_TwofishAlgs.KeySchedule
                 {
                     packOfMiniM[j] = mainKey[8 * i + j];
                 }
-                byte[] miniSVector = MatrixOperationsGF256.multMatrixesTwoFish(TwoFish.TwoFishMatrixes.RS, packOfMiniM, IrreduciblePolynoms.X8X6X3X2_1);
+                byte[] miniSVector = MatrixOperationsGF256.MultMatrixesTwoFish(TwoFish.TwoFishMatrixes.RS, packOfMiniM, IrreduciblePolynoms.X8X6X3X2_1);
                 //byte[] Si = CryptSimpleFunctions.ConcatBitParts(miniSVector);
                 totalSBlock.Insert(0, miniSVector);
             }

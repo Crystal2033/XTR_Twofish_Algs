@@ -10,7 +10,7 @@ namespace XTR_TwofishAlgs.MathBase
 {
     public static class MatrixOperationsGF256
     {
-        public static byte[] multMatrixesTwoFish(byte[,] matrix, byte[] vector, IrreduciblePolynoms polynom)
+        public static byte[] MultMatrixesTwoFish(byte[,] matrix, byte[] vector, IrreduciblePolynoms polynom)
         {
             byte[] result = new byte[matrix.GetLength(0)];//4x8 matrix * 8x1 vector = 4x1 vector
             GF256[] resultGalua = GF256.getEmptyVector(matrix.GetLength(0));
