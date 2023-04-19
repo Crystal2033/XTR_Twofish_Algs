@@ -54,6 +54,17 @@ namespace XTR_TwofishAlgs.HelpFunctions
             }
             return result;
         }
+
+        public static byte[] FromIntToBytes(Int64 value)
+        {
+            byte[] bytes = new byte[4];
+
+            bytes[0] = (byte)((value >> 24) & 0xFF);
+            bytes[1] = (byte)((value >> 16) & 0xFF);
+            bytes[2] = (byte)((value >> 8) & 0xFF);
+            bytes[3] = (byte)(value & 0xFF);
+            return bytes;
+        }
         public static void ClearBytes(ref byte[] bytes, int startFrom = 0)
         {
             for (int i = startFrom; i < bytes.Length; i++)

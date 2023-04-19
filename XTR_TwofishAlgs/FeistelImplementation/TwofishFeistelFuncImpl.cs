@@ -18,10 +18,27 @@ namespace XTR_TwofishAlgs.FeistelImplementation
             byte[] T1 = gFunction(CryptSimpleFunctions.CycleLeftShift(R1, 32, 8), sBox);
             CryptSimpleFunctions.ShowBinaryView(T0, "T0");
             CryptSimpleFunctions.ShowBinaryView(T1, "T1");
-            (byte[] T0PHT, byte[] T1PHT) = TwoFishFunctions.PseudoHadamardTransforms(T0, T1);
+            //(byte[] T0PHT, byte[] T1PHT) = TwoFishFunctions.PseudoHadamardTransforms(T0, T1);
 
-            byte[] F0 = TwoFishFunctions.SumMod32(T0PHT, evenRoundKey);
-            byte[] F1 = TwoFishFunctions.SumMod32(T1PHT, oddRoundKey);
+            int T0Int = CryptSimpleFunctions.FromBytesToInt(T0, 32);
+            int T1Int = CryptSimpleFunctions.FromBytesToInt(T1, 32);
+            
+            int evenKeyInt = CryptSimpleFunctions.FromBytesToInt(evenRoundKey, 32);
+            int oddKeyInt = CryptSimpleFunctions.FromBytesToInt(oddRoundKey, 32);
+            //byte[] resTOT1 = CryptSimpleFunctions.FromIntToBytes(T0Int + T1Int);
+            //byte[] resTO2T1 = CryptSimpleFunctions.FromIntToBytes(T0Int + 2*T1Int);
+            //CryptSimpleFunctions.ShowBinaryView(resTOT1, "resTOT1");
+            //CryptSimpleFunctions.ShowBinaryView(resTO2T1, "resTO2T1");
+            //CryptSimpleFunctions.ShowBinaryView(T0Int, "T0Int");
+            //CryptSimpleFunctions.ShowBinaryView(T1Int, "T1Int");
+            //CryptSimpleFunctions.ShowBinaryView(evenKeyInt, "evenKeyInt");
+            //CryptSimpleFunctions.ShowBinaryView(oddKeyInt, "oddKeyInt");
+            //CryptSimpleFunctions.ShowBinaryView(evenRoundKey, "evenKey");
+            //CryptSimpleFunctions.ShowBinaryView(oddRoundKey, "oddKey");
+            byte[] F0 = CryptSimpleFunctions.FromIntToBytes(T0Int + T1Int + evenKeyInt);
+            byte[] F1 = CryptSimpleFunctions.FromIntToBytes(T0Int + 2*T1Int + oddKeyInt);
+            //CryptSimpleFunctions.ShowBinaryView(F0, "F0");
+            //CryptSimpleFunctions.ShowBinaryView(F1, "F1");
             return (F0, F1);
         }
 

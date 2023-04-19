@@ -14,16 +14,16 @@ internal class Program
         Console.WriteLine("Hello, World!");
         //byte[] plainText = new byte[16] { 123, 43, 135, 23, 233, 111, 13, 123, 54, 78, 239, 21, 231, 2, 28, 43 };
         byte[] plainText = new byte[16] { 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        //byte[] mainKey = new byte[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        byte[] mainKey = new byte[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         //byte[] mainKey = new byte[16] { 123, 43, 135, 23, 233, 111, 13, 123, 54, 78, 239, 21, 231, 2, 28, 43 };
-        byte[] mainKey = new byte[24] { 0x01, 0x23, 0x34, 0x56, 0x78,
-            0x9a, 0xbc, 0xde, 0xff, 0xed, 0xcb,
-            0xa9, 0x87, 0x65, 0x43, 0x21, 0x00, 0x01, 0x12, 0x23, 0x34, 0x45, 0x56,0x67};
+        //byte[] mainKey = new byte[24] { 0x01, 0x23, 0x34, 0x56, 0x78,
+        //    0x9a, 0xbc, 0xde, 0xff, 0xed, 0xcb,
+        //    0xa9, 0x87, 0x65, 0x43, 0x21, 0x00, 0x01, 0x12, 0x23, 0x34, 0x45, 0x56,0x67};
         //byte[] initVector = new byte[8] { 125, 67, 111, 110, 203, 211, 255, 11 };
         IKeyExpansion keyExpansion = new KeyExpansionTwoFish();
         IFeistelFunction feistelFunction = new TwofishFeistelFuncImpl();
 
-        FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction, TwoFishKeySizes.MIDDLE) { MainKey = mainKey };
+        FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction, TwoFishKeySizes.EASY) { MainKey = mainKey };
         feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
 
 
