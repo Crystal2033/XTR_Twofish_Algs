@@ -31,7 +31,7 @@ namespace XTR_TwofishAlgs.TwoFish
                     q0Function(connectBytes[2]),
                     q1Function(connectBytes[3])
                 };
-                connectBytes = CryptSimpleFunctions.XorByteArrays(zeroBlockRes, sBox[3]);
+                connectBytes = CryptSimpleFunctions.XorByteArrays(zeroBlockRes, CryptSimpleFunctions.RevertBytes(sBox[3]));
             }
             if (keySize == TwoFishKeySizes.HARD || keySize == TwoFishKeySizes.MIDDLE)
             {
@@ -43,46 +43,46 @@ namespace XTR_TwofishAlgs.TwoFish
                     q1Function(connectBytes[2]),
                     q1Function(connectBytes[3])
                 };
-                connectBytes = CryptSimpleFunctions.XorByteArrays(firstBlockRes, sBox[2]);
+                connectBytes = CryptSimpleFunctions.XorByteArrays(firstBlockRes, CryptSimpleFunctions.RevertBytes(sBox[2]));
             }
             //k >=2
 
-            //byte[] secondBlockRes = new byte[4]
-            //{
-            //    q1Function(connectBytes[3]),
-            //    q0Function(connectBytes[2]),
-            //    q1Function(connectBytes[1]),
-            //    q0Function(connectBytes[0])
-            //};
-
-            //connectBytes = CryptSimpleFunctions.XorByteArrays(secondBlockRes, sBox[1]);
-
-            //byte[] thirdBlockRes = new byte[4]
-            //{
-            //    q1Function(connectBytes[3]),
-            //    q1Function(connectBytes[2]),
-            //    q0Function(connectBytes[1]),
-            //    q0Function(connectBytes[0])
-            //};
-            //connectBytes = CryptSimpleFunctions.XorByteArrays(thirdBlockRes, sBox[0]);
-
-            //byte[] fourthBlockRes = new byte[4]
-            //{
-            //    q0Function(connectBytes[3]),
-            //    q1Function(connectBytes[2]),
-            //    q0Function(connectBytes[1]),
-            //    q1Function(connectBytes[0])
-            //};
-
-            byte[] result = new byte[4]
+            byte[] secondBlockRes = new byte[4]
             {
-                q1Function((byte)(q0Function((byte)(q0Function(connectBytes[3]) ^ sBox[1][3])) ^ sBox[0][3])),
-                q0Function((byte)(q0Function((byte)(q1Function(connectBytes[2]) ^ sBox[1][2])) ^ sBox[0][2])),
-                q1Function((byte)(q1Function((byte)(q0Function(connectBytes[1]) ^ sBox[1][1])) ^ sBox[0][1])),
-                q0Function((byte)(q1Function((byte)(q1Function(connectBytes[0]) ^ sBox[1][0])) ^ sBox[0][0]))
+                q1Function(connectBytes[0]),
+                q0Function(connectBytes[1]),
+                q1Function(connectBytes[2]),
+                q0Function(connectBytes[3])
             };
-            byte[] zVector = MatrixOperationsGF256.multMatrixesTwoFish(TwoFishMatrixes.MDS, result, MathBase.GaloisField.IrreduciblePolynoms.X8X6X5X3_1);
-            return zVector;
+
+            connectBytes = CryptSimpleFunctions.XorByteArrays(secondBlockRes, CryptSimpleFunctions.RevertBytes(sBox[1]));
+
+            byte[] thirdBlockRes = new byte[4]
+            {
+                q1Function(connectBytes[0]),
+                q1Function(connectBytes[1]),
+                q0Function(connectBytes[2]),
+                q0Function(connectBytes[3])
+            };
+            connectBytes = CryptSimpleFunctions.XorByteArrays(thirdBlockRes, CryptSimpleFunctions.RevertBytes(sBox[0]));
+
+            byte[] fourthBlockRes = new byte[4]
+            {
+                q0Function(connectBytes[0]),
+                q1Function(connectBytes[1]),
+                q0Function(connectBytes[2]),
+                q1Function(connectBytes[3])
+            };
+
+            //byte[] result = new byte[4]
+            //{
+            //    q1Function((byte)(q0Function((byte)(q0Function(connectBytes[3]) ^ sBox[1][3])) ^ sBox[0][3])),
+            //    q0Function((byte)(q0Function((byte)(q1Function(connectBytes[2]) ^ sBox[1][2])) ^ sBox[0][2])),
+            //    q1Function((byte)(q1Function((byte)(q0Function(connectBytes[1]) ^ sBox[1][1])) ^ sBox[0][1])),
+            //    q0Function((byte)(q1Function((byte)(q1Function(connectBytes[0]) ^ sBox[1][0])) ^ sBox[0][0]))
+            //};
+            byte[] zVector = MatrixOperationsGF256.multMatrixesTwoFish(TwoFishMatrixes.MDS, CryptSimpleFunctions.RevertBytes(fourthBlockRes), MathBase.GaloisField.IrreduciblePolynoms.X8X6X5X3_1);
+            return CryptSimpleFunctions.RevertBytes(zVector);
         }
 
         

@@ -25,11 +25,17 @@ internal class Program
 
         FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction, TwoFishKeySizes.EASY) { MainKey = mainKey };
         feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
+
+
         //feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
         //ISymmetricEncryption desImpl = new DESImplementation(feistelKernel);
         //TwoFishFunctions.q0Function(testByte);
 
-        //GF256 a = 87;
+        GF256 a = 1;
+        for(int i = 0; i < 1000; i++)
+        {
+            Console.WriteLine(GF256.Mult(a, new GF256(i), IrreduciblePolynoms.X8X6X5X3_1).Value + " " + i);
+        }
         //GF256 b = 131;
         //CryptSimpleFunctions.ShowBinaryView(a.Value, "A= ");
         //CryptSimpleFunctions.ShowBinaryView(b.Value, "B= ");

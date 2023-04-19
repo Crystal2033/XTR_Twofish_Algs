@@ -49,7 +49,7 @@ namespace XTR_TwofishAlgs.HelpFunctions
             {
                 byte myBit = GetBitFromPos(bytes[i / 8], (byte)(i % 8));
 
-                result = (result << 1) | GetBitFromPos(bytes[i / 8], (byte)(i % 8));
+                result = (result << 1) | myBit;
                 //CryptSimpleFunctions.ShowBinaryView(result, "result");
             }
             return result;
