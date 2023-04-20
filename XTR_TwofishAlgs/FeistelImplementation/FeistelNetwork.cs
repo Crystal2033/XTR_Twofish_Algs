@@ -48,24 +48,24 @@ namespace XTR_TWOFISH.FeistelImplementation
         public byte[] Execute(in byte[] partOfText, int sizeInBits, CryptOperation cryptStatus)
         {
             List<byte[]> slicedBlocks = CryptSimpleFunctions.SliceArrayOnArrays(partOfText, 128, 4); //4 bytes in each block
-            //byte[] whitenM0 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[0], _raundKeys[0]); //whitening
-            //byte[] whitenM1 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[1], _raundKeys[1]); //whitening
-            //byte[] whitenM2 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[2], _raundKeys[2]); //whitening
-            //byte[] whitenM3 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[3], _raundKeys[3]); //whitening
-            //CryptSimpleFunctions.ShowBinaryView(whitenM0, "Whitening");
-            //CryptSimpleFunctions.ShowBinaryView(whitenM1, "Whitening");
-            //CryptSimpleFunctions.ShowBinaryView(whitenM2, "Whitening");
-            //CryptSimpleFunctions.ShowBinaryView(whitenM3, "Whitening");
-            if(cryptStatus == CryptOperation.DECRYPT)
+            byte[] whitenM0 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[0], _raundKeys[0]); //whitening
+            byte[] whitenM1 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[1], _raundKeys[1]); //whitening
+            byte[] whitenM2 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[2], _raundKeys[2]); //whitening
+            byte[] whitenM3 = CryptSimpleFunctions.XorByteArrays(slicedBlocks[3], _raundKeys[3]); //whitening
+            CryptSimpleFunctions.ShowHexView(whitenM0, "Whitening");
+            CryptSimpleFunctions.ShowHexView(whitenM1, "Whitening");
+            CryptSimpleFunctions.ShowHexView(whitenM2, "Whitening");
+            CryptSimpleFunctions.ShowHexView(whitenM3, "Whitening");
+            if (cryptStatus == CryptOperation.DECRYPT)
             {
                 _raundKeys.Reverse();
             }
 
 
-            byte[] resR0 = slicedBlocks[0];
-            byte[] resR1 = slicedBlocks[1];
-            byte[] resR2 = slicedBlocks[2];
-            byte[] resR3 = slicedBlocks[3];
+            byte[] resR0 = whitenM0;
+            byte[] resR1 = whitenM1;
+            byte[] resR2 = whitenM2;
+            byte[] resR3 = whitenM3;
 
             for (int i = 0; i < _valueOfRaunds; i++)
             {
@@ -79,18 +79,18 @@ namespace XTR_TWOFISH.FeistelImplementation
                 List<byte[]> roundParts = new() { resR0, resR1, resR2, resR3 };
                 for (int k = 0; k < roundParts.Count; k++)
                 {
-                    CryptSimpleFunctions.ShowBinaryView(roundParts[k], $"Round[{i}]");
+                    CryptSimpleFunctions.ShowHexView(roundParts[k], $"Round[{i}]");
                 }
             }
 
-            //byte[] cipherResR0 = CryptSimpleFunctions.XorByteArrays(resR2, _raundKeys[4]); //whitening
-            //byte[] cipherResR1 = CryptSimpleFunctions.XorByteArrays(resR3, _raundKeys[5]); //whitening
-            //byte[] cipherResR2 = CryptSimpleFunctions.XorByteArrays(resR0, _raundKeys[6]); //whitening
-            //byte[] cipherResR3 = CryptSimpleFunctions.XorByteArrays(resR1, _raundKeys[7]); //whitening
-            List<byte[]> cipherParts = new() { resR0, resR1, resR2, resR3 };
+            byte[] cipherResR0 = CryptSimpleFunctions.XorByteArrays(resR2, _raundKeys[4]); //whitening
+            byte[] cipherResR1 = CryptSimpleFunctions.XorByteArrays(resR3, _raundKeys[5]); //whitening
+            byte[] cipherResR2 = CryptSimpleFunctions.XorByteArrays(resR0, _raundKeys[6]); //whitening
+            byte[] cipherResR3 = CryptSimpleFunctions.XorByteArrays(resR1, _raundKeys[7]); //whitening
+            List<byte[]> cipherParts = new() { cipherResR0, cipherResR1, cipherResR2, cipherResR3 };
             for(int i = 0; i < cipherParts.Count; i++)
             {
-                CryptSimpleFunctions.ShowBinaryView(cipherParts[i], $"Cipher[{i}]");
+                CryptSimpleFunctions.ShowHexView(cipherParts[i], $"Cipher[{i}]");
             }
             return CryptSimpleFunctions.ConcatBitParts(cipherParts, 32);
         }

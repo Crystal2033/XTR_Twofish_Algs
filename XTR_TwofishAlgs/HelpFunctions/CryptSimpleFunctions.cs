@@ -24,6 +24,19 @@ namespace XTR_TwofishAlgs.HelpFunctions
             Console.WriteLine("---------------------------------------------");
         }
 
+        public static void ShowHexView(in byte[] viewBytes, in string message = "")
+        {
+            Console.WriteLine("---------------------------------------------");
+            Console.WriteLine(message);
+            for (int i = 0; i < viewBytes.Length; i++)
+            {
+                Console.Write(Convert.ToString(viewBytes[i], 16));
+                Console.Write(" ");
+            }
+            Console.WriteLine();
+            Console.WriteLine("---------------------------------------------");
+        }
+
         public static void ShowBinaryView(in byte viewByte, in string message = "")
         {
             Console.WriteLine("---------------------------------------------");
