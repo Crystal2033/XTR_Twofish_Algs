@@ -20,11 +20,11 @@ namespace XTR_TwofishAlgs.FeistelImplementation
             CryptSimpleFunctions.ShowBinaryView(T1, "T1");
             //(byte[] T0PHT, byte[] T1PHT) = TwoFishFunctions.PseudoHadamardTransforms(T0, T1);
 
-            int T0Int = CryptSimpleFunctions.FromBytesToInt(T0, 32);
-            int T1Int = CryptSimpleFunctions.FromBytesToInt(T1, 32);
-            
-            int evenKeyInt = CryptSimpleFunctions.FromBytesToInt(evenRoundKey, 32);
-            int oddKeyInt = CryptSimpleFunctions.FromBytesToInt(oddRoundKey, 32);
+            uint T0Int = CryptSimpleFunctions.FromBytesToInt(T0, 32);
+            uint T1Int = CryptSimpleFunctions.FromBytesToInt(T1, 32);
+
+            uint evenKeyInt = CryptSimpleFunctions.FromBytesToInt(evenRoundKey, 32);
+            uint oddKeyInt = CryptSimpleFunctions.FromBytesToInt(oddRoundKey, 32);
             //byte[] resTOT1 = CryptSimpleFunctions.FromIntToBytes(T0Int + T1Int);
             //byte[] resTO2T1 = CryptSimpleFunctions.FromIntToBytes(T0Int + 2*T1Int);
             //CryptSimpleFunctions.ShowBinaryView(resTOT1, "resTOT1");

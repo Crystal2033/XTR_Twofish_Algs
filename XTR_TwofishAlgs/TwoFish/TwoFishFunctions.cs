@@ -108,10 +108,10 @@ namespace XTR_TwofishAlgs.TwoFish
             byte[] newA = new byte[4];
             byte[] newB = new byte[4];
             CryptSimpleFunctions.ShowBinaryView(a, "a");
-            int aInt = CryptSimpleFunctions.FromBytesToInt(a, 32);
+            UInt32 aInt = CryptSimpleFunctions.FromBytesToInt(a, 32);
             CryptSimpleFunctions.ShowBinaryView(aInt, "aInt");
             CryptSimpleFunctions.ShowBinaryView(b, "b");
-            int bInt = CryptSimpleFunctions.FromBytesToInt(b, 32);
+            UInt32 bInt = CryptSimpleFunctions.FromBytesToInt(b, 32);
             CryptSimpleFunctions.ShowBinaryView(bInt, "bInt");
             newA = CryptSimpleFunctions.FromIntToBytes(aInt + bInt);
             CryptSimpleFunctions.ShowBinaryView(newA, "newA");
@@ -122,14 +122,14 @@ namespace XTR_TwofishAlgs.TwoFish
 
         public static byte[] SumMod32(byte[] first, byte[] second)
         {
-            int firstInt = CryptSimpleFunctions.FromBytesToInt(first, 32);
-            int secondInt = CryptSimpleFunctions.FromBytesToInt(second, 32);
+            UInt32 firstInt = CryptSimpleFunctions.FromBytesToInt(first, 32);
+            UInt32 secondInt = CryptSimpleFunctions.FromBytesToInt(second, 32);
             return CryptSimpleFunctions.FromIntToBytes(firstInt + secondInt);
         }
 
         public static byte[] SumMod32(params byte[][] bytes)
         {
-            int sum = 0;
+            UInt32 sum = 0;
             for (int i = 0; i < bytes.Length; i++)
             {
                 sum += CryptSimpleFunctions.FromBytesToInt(bytes[i], 32);

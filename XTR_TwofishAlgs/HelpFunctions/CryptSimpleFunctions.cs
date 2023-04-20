@@ -33,7 +33,7 @@ namespace XTR_TwofishAlgs.HelpFunctions
             Console.WriteLine("---------------------------------------------");
         }
 
-        public static void ShowBinaryView(in int viewByte, in string message = "")
+        public static void ShowBinaryView(in uint viewByte, in string message = "")
         {
             Console.WriteLine("---------------------------------------------");
             Console.WriteLine(message);
@@ -42,9 +42,9 @@ namespace XTR_TwofishAlgs.HelpFunctions
             Console.WriteLine("---------------------------------------------");
         }
 
-        public static int FromBytesToInt(byte[] bytes, int valueOfBits)
+        public static UInt32 FromBytesToInt(byte[] bytes, uint valueOfBits)
         {
-            int result = 0;
+            UInt32 result = 0;
             for(int i = 0; i < valueOfBits; i++)
             {
                 byte myBit = GetBitFromPos(bytes[i / 8], (byte)(i % 8));
@@ -55,7 +55,7 @@ namespace XTR_TwofishAlgs.HelpFunctions
             return result;
         }
 
-        public static byte[] FromIntToBytes(Int64 value)
+        public static byte[] FromIntToBytes(uint value)
         {
             byte[] bytes = new byte[4];
 
@@ -210,7 +210,7 @@ namespace XTR_TwofishAlgs.HelpFunctions
             resultByte = ShakeAndDropNotNeededNitsInByte(resultByte, leftEdge, rightEdge);
             CryptSimpleFunctions.ShowBinaryView(resultByte);
             CryptSimpleFunctions.ShowBinaryView(ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
-            CryptSimpleFunctions.ShowBinaryView(myByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+            CryptSimpleFunctions.ShowBinaryView((byte)(myByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true)));
 
             return (byte)(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
         }
