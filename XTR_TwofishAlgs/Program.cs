@@ -27,10 +27,7 @@ internal class Program
 
         FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction, TwoFishKeySizes.EASY) { MainKey = mainKey };
         byte[] cipher = feistelKernel.Execute(plainText, 128, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
-        for(int i = 0; i < cipher.Length; i++)
-        {
-            CryptSimpleFunctions.ShowBinaryView(cipher[i]);
-        }
+        CryptSimpleFunctions.ShowHexView(cipher);
         byte[] pt = feistelKernel.Execute(cipher, 128, XTR_TWOFISH.CypherEnums.CryptOperation.DECRYPT);
 
 

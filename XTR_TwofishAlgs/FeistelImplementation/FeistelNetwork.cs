@@ -56,11 +56,6 @@ namespace XTR_TWOFISH.FeistelImplementation
             CryptSimpleFunctions.ShowHexView(whitenM1, "Whitening");
             CryptSimpleFunctions.ShowHexView(whitenM2, "Whitening");
             CryptSimpleFunctions.ShowHexView(whitenM3, "Whitening");
-            if (cryptStatus == CryptOperation.DECRYPT)
-            {
-                _raundKeys.Reverse();
-            }
-
 
             byte[] resR0 = whitenM0;
             byte[] resR1 = whitenM1;
@@ -87,7 +82,11 @@ namespace XTR_TWOFISH.FeistelImplementation
             byte[] cipherResR1 = CryptSimpleFunctions.XorByteArrays(resR3, _raundKeys[5]); //whitening
             byte[] cipherResR2 = CryptSimpleFunctions.XorByteArrays(resR0, _raundKeys[6]); //whitening
             byte[] cipherResR3 = CryptSimpleFunctions.XorByteArrays(resR1, _raundKeys[7]); //whitening
-            List<byte[]> cipherParts = new() { cipherResR0, cipherResR1, cipherResR2, cipherResR3 };
+            List<byte[]> cipherParts = new() 
+            {
+                CryptSimpleFunctions.RevertBytes(cipherResR0), CryptSimpleFunctions.RevertBytes(cipherResR1)
+                , CryptSimpleFunctions.RevertBytes(cipherResR2), CryptSimpleFunctions.RevertBytes(cipherResR3)
+            };
             for(int i = 0; i < cipherParts.Count; i++)
             {
                 CryptSimpleFunctions.ShowHexView(cipherParts[i], $"Cipher[{i}]");
@@ -95,6 +94,18 @@ namespace XTR_TWOFISH.FeistelImplementation
             return CryptSimpleFunctions.ConcatBitParts(cipherParts, 32);
         }
 
+
+        private byte[] GetRoundKeyByIndexAndOperation(int index, CryptOperation cryptStatus)
+        {
+            if(cryptStatus == CryptOperation.ENCRYPT)
+            {
+                return _raundKeys[index];
+            }
+            else
+            {
+                return _raundKeys[(_raundKeys.Count - 1) - index + 8];
+            }
+        }
 
         
     }
