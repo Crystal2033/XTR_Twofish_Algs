@@ -22,7 +22,6 @@ namespace XTR_TwofishAlgs.MathBase
                 for(int j = 0; j < matrix.GetLength(1); j++)
                 {
                     GF256 galoisRes = GF256.Mult(galuaMatrix[i, j], galuaVector[j], polynom);
-                    //CryptSimpleFunctions.ShowBinaryView(galoisRes.Value, "Galois res after mult");
                     resultGalua[i] = resultGalua[i] + galoisRes;
                 }
                 result[i] = (byte)resultGalua[i].Value;

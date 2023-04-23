@@ -19,15 +19,13 @@ namespace XTR_TWOFISH.FeistelImplementation
         private List<byte[]> _raundKeys;
         private readonly int _valueOfRaunds = 16;
         private readonly byte[] _mainKey;
-        //private readonly TwoFishKeySizes keySize=TwoFishKeySizes.EASY;
         private List<byte[]> sBoxes;
         public byte[] MainKey{
             get =>
                 MainKey;
             
             init {
-                _mainKey = value;
-                prepareMainKey(_mainKey);
+                _mainKey = prepareMainKey(value);
                 _raundKeys = KeyExpander.GenerateRoundKeys(_mainKey, out sBoxes);
             }
         }
@@ -47,25 +45,14 @@ namespace XTR_TWOFISH.FeistelImplementation
                 slicedBlocks[i] = CryptSimpleFunctions.RevertBytes(slicedBlocks[i]);
             }
 
-            for (int k = 0; k < slicedBlocks.Count; k++)
-            {
-                CryptSimpleFunctions.ShowHexView(slicedBlocks[k], $"CryptedText[{k}]");
-            }
-
             inputWhitenning(slicedBlocks, cryptStatus);
-
-            CryptSimpleFunctions.ShowHexView(slicedBlocks[0], "Whitening");
-            CryptSimpleFunctions.ShowHexView(slicedBlocks[1], "Whitening");
-            CryptSimpleFunctions.ShowHexView(slicedBlocks[2], "Whitening");
-            CryptSimpleFunctions.ShowHexView(slicedBlocks[3], "Whitening");
 
             for (int i = 0; i < _valueOfRaunds; i++)
             {
                 byte[] savedR0 = (byte[])slicedBlocks[0].Clone();
                 byte[] savedR1 = (byte[])slicedBlocks[1].Clone();
                 (byte[] F0, byte[] F1) = FeistelFunction.FeistelFunction(slicedBlocks[0], slicedBlocks[1], GetRoundKeyByIndexAndOperation(2*i+8, cryptStatus), GetRoundKeyByIndexAndOperation(2*i + 9, cryptStatus), sBoxes); // not need i or let list<byte[]> keys in function
-                CryptSimpleFunctions.ShowHexView(slicedBlocks[2], "Resr2");
-                CryptSimpleFunctions.ShowHexView(slicedBlocks[3], "Resr3");
+
                 if(cryptStatus == CryptOperation.DECRYPT)
                 {
                     slicedBlocks[0] = CryptSimpleFunctions.XorByteArrays(CryptSimpleFunctions.CycleLeftShift(slicedBlocks[2], 32, 1), F0);
@@ -87,25 +74,10 @@ namespace XTR_TWOFISH.FeistelImplementation
                 slicedBlocks[2] = savedR0;
                 slicedBlocks[3] = savedR1;
                 
-                for (int k = 0; k < slicedBlocks.Count; k++)
-                {
-                    CryptSimpleFunctions.ShowHexView(slicedBlocks[k], $"Round[{i}]");
-                }
             }
 
             outputWhitenning(slicedBlocks, cryptStatus);
-            for (int k = 0; k < slicedBlocks.Count; k++)
-            {
-                CryptSimpleFunctions.ShowHexView(slicedBlocks[k], $"OutpuWhiten");
-            }
-
             transformOutputCryptText(slicedBlocks);
-
-
-            for(int i = 0; i < slicedBlocks.Count; i++)
-            {
-                CryptSimpleFunctions.ShowHexView(slicedBlocks[i], $"Cipher[{i}]");
-            }
             return CryptSimpleFunctions.ConcatBitParts(slicedBlocks, 32);
         }
 
@@ -131,6 +103,7 @@ namespace XTR_TWOFISH.FeistelImplementation
             else if(mainKey.Length > 24)
             {
                 newKey = supplementKeyWithZeroes(mainKey, 32);
+                
             }
             else if(mainKey.Length > 16)
             {
@@ -140,6 +113,7 @@ namespace XTR_TWOFISH.FeistelImplementation
             {
                 newKey = supplementKeyWithZeroes(mainKey, 16);
             }
+            CryptSimpleFunctions.ClearBytes(mainKey, 0);
             return newKey;
         }
 

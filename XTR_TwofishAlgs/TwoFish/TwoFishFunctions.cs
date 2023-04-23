@@ -70,13 +70,6 @@ namespace XTR_TwofishAlgs.TwoFish
                 q0Function(connectBytes[2]),
                 q1Function(connectBytes[3])
             };
-            //byte[] result = new byte[4]
-            //{
-            //    q1Function((byte)(q0Function((byte)(q0Function(connectBytes[3]) ^ sBox[1][3])) ^ sBox[0][3])),
-            //    q0Function((byte)(q0Function((byte)(q1Function(connectBytes[2]) ^ sBox[1][2])) ^ sBox[0][2])),
-            //    q1Function((byte)(q1Function((byte)(q0Function(connectBytes[1]) ^ sBox[1][1])) ^ sBox[0][1])),
-            //    q0Function((byte)(q1Function((byte)(q1Function(connectBytes[0]) ^ sBox[1][0])) ^ sBox[0][0]))
-            //};
             byte[] zVector = MatrixOperationsGF256.MultMatrixesTwoFish(TwoFishMatrixes.MDS, CryptSimpleFunctions.RevertBytes(fourthBlockRes), MathBase.GaloisField.IrreduciblePolynoms.X8X6X5X3_1);
             return CryptSimpleFunctions.RevertBytes(zVector);
         }
@@ -103,29 +96,23 @@ namespace XTR_TwofishAlgs.TwoFish
         {
             byte[] newA = new byte[4];
             byte[] newB = new byte[4];
-            //CryptSimpleFunctions.ShowBinaryView(a, "a");
-            UInt32 aInt = CryptSimpleFunctions.FromBytesToInt(a, 32);
-            //CryptSimpleFunctions.ShowBinaryView(aInt, "aInt");
-            //CryptSimpleFunctions.ShowBinaryView(b, "b");
-            UInt32 bInt = CryptSimpleFunctions.FromBytesToInt(b, 32);
-            //CryptSimpleFunctions.ShowBinaryView(bInt, "bInt");
+            uint aInt = CryptSimpleFunctions.FromBytesToInt(a, 32);
+            uint bInt = CryptSimpleFunctions.FromBytesToInt(b, 32);
             newA = CryptSimpleFunctions.FromIntToBytes(aInt + bInt);
-            //CryptSimpleFunctions.ShowBinaryView(newA, "newA");
             newB = CryptSimpleFunctions.FromIntToBytes(aInt + 2 * bInt);
-            //CryptSimpleFunctions.ShowBinaryView(newB, "newB");
             return (newA, newB);
         }
 
         public static byte[] SumMod32(byte[] first, byte[] second)
         {
-            UInt32 firstInt = CryptSimpleFunctions.FromBytesToInt(first, 32);
-            UInt32 secondInt = CryptSimpleFunctions.FromBytesToInt(second, 32);
+            uint firstInt = CryptSimpleFunctions.FromBytesToInt(first, 32);
+            uint secondInt = CryptSimpleFunctions.FromBytesToInt(second, 32);
             return CryptSimpleFunctions.FromIntToBytes(firstInt + secondInt);
         }
 
         public static byte[] SumMod32(params byte[][] bytes)
         {
-            UInt32 sum = 0;
+            uint sum = 0;
             for (int i = 0; i < bytes.Length; i++)
             {
                 sum += CryptSimpleFunctions.FromBytesToInt(bytes[i], 32);
@@ -136,38 +123,22 @@ namespace XTR_TwofishAlgs.TwoFish
         
         public static byte qFunctionGeneral(byte x, byte[,] tMatrix)//q1 is the same, but different tMatrix
         {
-            //CryptSimpleFunctions.ShowBinaryView(x, "X");
             byte a0 = (byte)(x / 16);
-            //CryptSimpleFunctions.ShowBinaryView(a0, "a0");
             byte b0 = (byte)(x % 16);
-            //CryptSimpleFunctions.ShowBinaryView(b0, "b0");
+
             byte a1 = (byte)(a0 ^ b0);
-            
             byte b1 = (byte)(a0 ^ CryptSimpleFunctions.CycleRightShiftInByte(b0, 4, 8, 1) ^ 8 * a0 % 16);
 
-            //CryptSimpleFunctions.ShowBinaryView(b1, "b1");
             byte a2 = tMatrix[0, a1];
-            //CryptSimpleFunctions.ShowBinaryView(a2, "a2");
             byte b2 = tMatrix[1, b1];
-            //CryptSimpleFunctions.ShowBinaryView(b2, "b2");
 
             byte a3 = (byte)(a2 ^ b2);
-            //CryptSimpleFunctions.ShowBinaryView(a3, "a3 = a2 ^ b2");
-
-            //CryptSimpleFunctions.ShowBinaryView(CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1), "ROR4(b2,1)");
-            //CryptSimpleFunctions.ShowBinaryView(a2 ^ CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1), "a2 ^ ROR4(b2,1)");
-            //CryptSimpleFunctions.ShowBinaryView(8 * a2 % 16, "8 * a2 % 16");
-            //CryptSimpleFunctions.ShowBinaryView(a2 ^ CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1) ^ (8 * a2) % 16, "a2 ^ ROR4(b2,1) ^ 8 * a2 % 16");
             byte b3 = (byte)(a2 ^ CryptSimpleFunctions.CycleRightShiftInByte(b2, 4, 8, 1) ^ 8 * a2 % 16);
 
             byte a4 = tMatrix[2, a3];
             byte b4 = tMatrix[3, b3];
-            //CryptSimpleFunctions.ShowBinaryView(a4, "a4");
-            //CryptSimpleFunctions.ShowBinaryView(b4, "b4");
 
-            byte y = (byte)(16 * b4 + a4);
-            //CryptSimpleFunctions.ShowBinaryView(y, "y");
-            return y;
+            return (byte)(16 * b4 + a4);
         }
     }
 }

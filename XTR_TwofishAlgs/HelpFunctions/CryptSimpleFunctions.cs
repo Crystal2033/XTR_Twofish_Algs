@@ -55,15 +55,14 @@ namespace XTR_TwofishAlgs.HelpFunctions
             Console.WriteLine("---------------------------------------------");
         }
 
-        public static UInt32 FromBytesToInt(byte[] bytes, uint valueOfBits)
+        public static uint FromBytesToInt(byte[] bytes, uint valueOfBits)
         {
-            UInt32 result = 0;
+            uint result = 0;
             for(int i = 0; i < valueOfBits; i++)
             {
                 byte myBit = GetBitFromPos(bytes[i / 8], (byte)(i % 8));
 
                 result = (result << 1) | myBit;
-                //CryptSimpleFunctions.ShowBinaryView(result, "result");
             }
             return result;
         }
@@ -78,7 +77,7 @@ namespace XTR_TwofishAlgs.HelpFunctions
             bytes[3] = (byte)(value & 0xFF);
             return bytes;
         }
-        public static void ClearBytes(ref byte[] bytes, int startFrom = 0)
+        public static void ClearBytes(byte[] bytes, int startFrom = 0)
         {
             for (int i = startFrom; i < bytes.Length; i++)
             {
@@ -124,7 +123,7 @@ namespace XTR_TwofishAlgs.HelpFunctions
                 result[i / CryptConstants.BITS_IN_BYTE] = (byte)(result[i / CryptConstants.BITS_IN_BYTE] | (currBit << CryptConstants.BITS_IN_BYTE - (i % CryptConstants.BITS_IN_BYTE + 1)));
             }
             bytes = (byte[])result.Clone();
-            ClearBytes(ref result);
+            ClearBytes(result);
         }
 
 
@@ -139,7 +138,6 @@ namespace XTR_TwofishAlgs.HelpFunctions
 
         public static List<byte[]> SliceArrayOnArrays(in byte[] plainText, int valueOfBitsInText, int valueOfBlocks)
         {
-            ShowBinaryView(plainText, " Plain text");
             int valueBitsInSlicedText = valueOfBitsInText / valueOfBlocks;
             int valueOfBytesInBlock = (int)Math.Ceiling((double)valueBitsInSlicedText / (double)CryptConstants.BITS_IN_BYTE);
             List<byte[]> slicedBytes = new();
@@ -148,7 +146,6 @@ namespace XTR_TwofishAlgs.HelpFunctions
                 slicedBytes.Add(new byte[valueOfBytesInBlock]);
                 SetRangeOfBits(plainText, i * valueBitsInSlicedText / CryptConstants.BITS_IN_BYTE,
                     (byte)(valueBitsInSlicedText % CryptConstants.BITS_IN_BYTE), valueBitsInSlicedText, slicedBytes[i], 0, 0);
-                ShowBinaryView(slicedBytes[i]);
             }
             return slicedBytes;
         }
@@ -181,16 +178,12 @@ namespace XTR_TwofishAlgs.HelpFunctions
 
         public static byte CycleRightShiftInByte(byte myByte, int leftEdge, int rightEdge, int shiftValue) //[leftEdge, rightEdge)
         {
-            //CryptSimpleFunctions.ShowBinaryView(myByte);
             shiftValue = shiftValue % (rightEdge - leftEdge);
             byte resultByte = 0;
             resultByte = ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge);
-            //CryptSimpleFunctions.ShowBinaryView(resultByte);
             resultByte = (byte)((resultByte << (rightEdge - leftEdge - shiftValue)) | (resultByte >> shiftValue)); //shifting in small range of bits in byte
             resultByte = ShakeAndDropNotNeededNitsInByte(resultByte, leftEdge, rightEdge);
-            //CryptSimpleFunctions.ShowBinaryView(resultByte);
-            //CryptSimpleFunctions.ShowBinaryView(ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
-            //CryptSimpleFunctions.ShowBinaryView(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+            
 
             return (byte)(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
         }
@@ -200,13 +193,10 @@ namespace XTR_TwofishAlgs.HelpFunctions
             byte tmp = 0;
             if (removeInsideRange)
             {
-                //ShowBinaryView((myByte >> (8 - leftEdge) | 0) << (8 - leftEdge));
-                //ShowBinaryView((byte)(myByte << rightEdge) | 0);
                 var tmp1 = (byte)(myByte >> (8 - leftEdge) | 0) << (8 - leftEdge);
                 var tmp2 = (byte)(((myByte << rightEdge) | 0));
 
                 tmp = (byte)(tmp1 | (tmp2 >> rightEdge));
-                //ShowBinaryView(tmp);
                 return (byte)(tmp);
             }
             tmp = (byte)((((myByte >> (8 - rightEdge) | 0) << (8 - (rightEdge - leftEdge))) | 0));
@@ -214,17 +204,11 @@ namespace XTR_TwofishAlgs.HelpFunctions
         }
         public static byte CycleLeftShiftInByte(byte myByte, int leftEdge, int rightEdge, int shiftValue) //[leftEdge, rightEdge)
         {
-            CryptSimpleFunctions.ShowBinaryView(myByte);
             shiftValue = shiftValue % (rightEdge - leftEdge);
             byte resultByte = 0;
             resultByte = ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge);
-            CryptSimpleFunctions.ShowBinaryView(resultByte);
             resultByte = (byte)((resultByte >> (rightEdge - leftEdge - shiftValue)) | (resultByte << shiftValue)); //shifting in small range of bits in byte
             resultByte = ShakeAndDropNotNeededNitsInByte(resultByte, leftEdge, rightEdge);
-            CryptSimpleFunctions.ShowBinaryView(resultByte);
-            CryptSimpleFunctions.ShowBinaryView(ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
-            CryptSimpleFunctions.ShowBinaryView((byte)(myByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true)));
-
             return (byte)(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
         }
 
@@ -265,9 +249,6 @@ namespace XTR_TwofishAlgs.HelpFunctions
             {
                 SetRangeOfBits(parts[i], 0, 0, bitSize, concatArr, i * bitSize / CryptConstants.BITS_IN_BYTE, (byte)((i * bitSize) % CryptConstants.BITS_IN_BYTE));
             }
-            ShowBinaryView(concatArr);
-            //SetRangeOfBits(leftPart, 0, 0, leftSize, concatArr, 0, 0);
-            //SetRangeOfBits(rightPart, 0, 0, rightSize, concatArr, leftSize / CryptConstants.BITS_IN_BYTE, (byte)(leftSize % CryptConstants.BITS_IN_BYTE));
             return concatArr;
         }
 

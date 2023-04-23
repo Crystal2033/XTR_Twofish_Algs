@@ -19,7 +19,6 @@ namespace XTR_TwofishAlgs.KeySchedule
     {
         public List<byte[]> GenerateRoundKeys(byte[] mainKey, out List<byte[]> sBoxes)
         {
-            CryptSimpleFunctions.ShowHexView(mainKey, "MainKey");
             List<byte[]> roundKeys = new();
 
             (List<byte[]> sBlock, (List<byte[]> Mo, List<byte[]> Me)) = getBasisOfKeySchedule(mainKey);
@@ -34,14 +33,11 @@ namespace XTR_TwofishAlgs.KeySchedule
                 (byte[]newA, byte[] newB) = TwoFishFunctions.PseudoHadamardTransforms(Ai, Bi);
                 byte[] K2i = newA;
                 byte[] K2iPlus1 = CryptSimpleFunctions.CycleLeftShift(newB, 32, 9);
-                CryptSimpleFunctions.ShowHexView(K2i, $"Key[{2 * i}]");
-                CryptSimpleFunctions.ShowHexView(K2iPlus1, $"Key[{2 * i + 1}]");
                 roundKeys.Add(K2i);
                 roundKeys.Add(K2iPlus1);
             }
             return roundKeys;
         }
-
         
 
         private byte[] getFilledBytesWithNumber(int valueOfBytes, int number)
@@ -68,38 +64,25 @@ namespace XTR_TwofishAlgs.KeySchedule
                 {
                     packOfMiniM[j] = mainKey[8 * i + j];
                 }
-                CryptSimpleFunctions.ShowHexView(packOfMiniM, $"m");
                 byte[] miniSVector = MatrixOperationsGF256.MultMatrixesTwoFish(TwoFish.TwoFishMatrixes.RS, packOfMiniM, IrreduciblePolynoms.X8X6X3X2_1);
-                CryptSimpleFunctions.ShowHexView(miniSVector, $"SVector");
                 totalSBlock.Insert(0, miniSVector);
-            }
-            for(int i = 0; i < totalSBlock.Count; i++)
-            {
-                CryptSimpleFunctions.ShowHexView(totalSBlock[i], $"SBlock{i}");
             }
             return (totalSBlock, (Mo, Me));
         } 
 
-        private List<byte[]> getListOfMi(byte[] preparedKey) //CHECKED
+        private List<byte[]> getListOfMi(byte[] preparedKey)
         {
             int k = preparedKey.Length / 8;
             List<byte[]> Mi = new List<byte[]>();
             for (int i = 0; i < 2 * k; i++)
             {
-                Mi.Add(CryptSimpleFunctions.ConcatBitParts(preparedKey[4 * i + 3], preparedKey[4 * i + 2],
-                    preparedKey[4 * i + 1], preparedKey[4 * i]));
-                Mi[i] = CryptSimpleFunctions.RevertBytes(Mi[i]);
-                //Mi.Add(CryptSimpleFunctions.ConcatBitParts(preparedKey[4 * i + 3], preparedKey[4 * i + 2],
-                //   preparedKey[4 * i + 1], preparedKey[4 * i]));
-            }
-            for(int i = 0; i < Mi.Count; i++)
-            {
-                CryptSimpleFunctions.ShowHexView(Mi[i], $"Mi{i}");
+                Mi.Add(CryptSimpleFunctions.ConcatBitParts(preparedKey[4 * i], preparedKey[4 * i + 1],
+                    preparedKey[4 * i + 2], preparedKey[4 * i + 3]));
             }
             return Mi;
         }
 
-        private (List<byte[]> Mo, List<byte[]> Me) getMoAndMeVectors(List<byte[]> Mi) //CHECKED
+        private (List<byte[]> Mo, List<byte[]> Me) getMoAndMeVectors(List<byte[]> Mi)
         {
             List<byte[]> Mo = new List<byte[]>();
             List<byte[]> Me = new List<byte[]>();

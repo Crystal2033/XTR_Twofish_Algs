@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XTR_TwofishAlgs.Exceptions;
 using XTR_TwofishAlgs.HelpFunctions;
 
 namespace XTR_TwofishAlgs.MathBase.GaloisField
@@ -13,6 +14,10 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         public uint Value { get => _value; set => _value = value; }
         public GF256(uint value)
         {
+            if(value >= 256)
+            {
+                throw new GaloisOutOfFieldException($"Galois value {value} is out of GF256.");
+            }
             _value = value;
         }
 
@@ -113,11 +118,7 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
             int maxFieldValue = 1 << nextDivider2DegreeGreater;
             while (dividing >= maxFieldValue)
             {
-                //CryptSimpleFunctions.ShowBinaryView(dividing, "dividing");
-                //CryptSimpleFunctions.ShowBinaryView(divider << ((getHighest2DegreeValue(dividing) - nextDivider2DegreeGreater)), "shifted divider");
-                //CryptSimpleFunctions.ShowBinaryView((divider << ((getHighest2DegreeValue(dividing) - nextDivider2DegreeGreater))) ^ dividing, "result");
                 dividing = (divider << ((getHighest2DegreeValue(dividing) - nextDivider2DegreeGreater))) ^ dividing;
-                
             }
             return dividing;
         }
@@ -140,7 +141,8 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
                 }
                 copiedRight.Value >>= 1;
             }
-            return new GF256(divideByColumn(res, (uint)polynom));
+            return new GF256(res);
+            //return new GF256(divideByColumn(res, (uint)polynom));
         }
         
     }

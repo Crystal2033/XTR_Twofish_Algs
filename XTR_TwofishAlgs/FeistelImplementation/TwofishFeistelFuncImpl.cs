@@ -16,11 +16,6 @@ namespace XTR_TwofishAlgs.FeistelImplementation
         {
             byte[] T0 = gFunction(R0, sBox);
             byte[] T1 = gFunction(CryptSimpleFunctions.CycleLeftShift(R1, 32, 8), sBox);
-            CryptSimpleFunctions.ShowHexView(T0, "T0");
-            CryptSimpleFunctions.ShowHexView(T1, "T1");
-            //(byte[] T0PHT, byte[] T1PHT) = TwoFishFunctions.PseudoHadamardTransforms(T0, T1);
-            CryptSimpleFunctions.ShowHexView(evenRoundKey, "evenRoundKey");
-            CryptSimpleFunctions.ShowHexView(oddRoundKey, "oddRoundKey");
             uint T0Int = CryptSimpleFunctions.FromBytesToInt(T0, 32);
             uint T1Int = CryptSimpleFunctions.FromBytesToInt(T1, 32);
 
@@ -29,16 +24,12 @@ namespace XTR_TwofishAlgs.FeistelImplementation
 
             byte[] F0 = CryptSimpleFunctions.FromIntToBytes(T0Int + T1Int + evenKeyInt);
             byte[] F1 = CryptSimpleFunctions.FromIntToBytes(T0Int + 2*T1Int + oddKeyInt);
-            CryptSimpleFunctions.ShowHexView(F0, "F0");
-            CryptSimpleFunctions.ShowHexView(F1, "F1");
             return (F0, F1);
         }
 
         private byte[] gFunction(byte[] bytes, List<byte[]> sBox) //bytes here is 32 bits value (1/4 from part of plain text)
         {
-            byte[] result = TwoFishFunctions.hFunction(bytes, sBox, sBox.Count);
-
-            return result;
+            return TwoFishFunctions.hFunction(bytes, sBox, sBox.Count);
         }
     }
 }
