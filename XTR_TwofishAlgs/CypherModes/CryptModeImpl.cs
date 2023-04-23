@@ -19,10 +19,10 @@ namespace XTR_TWOFISH.CypherModes
             _cryptAlgorithm = cryptAlgorithm;
             _textBlockSizeInBytes = textBlockSizeBytes;
         }
-        public abstract void DecryptWithMode(string fileToDecrypt, string decryptResultFile);
+        public abstract Task DecryptWithMode(string fileToDecrypt, string decryptResultFile);
 
 
-        public abstract void EncryptWithMode(string fileToEncrypt, string encryptResultFile);
+        public abstract Task EncryptWithMode(string fileToEncrypt, string encryptResultFile);
 
     }
 }

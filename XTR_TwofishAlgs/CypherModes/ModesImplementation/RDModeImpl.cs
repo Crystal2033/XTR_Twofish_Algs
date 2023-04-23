@@ -32,14 +32,14 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             _initVector = initVector;
             _delta = delta;
         }
-        public override void DecryptWithMode(string fileToDecrypt, string decryptResultFile)
+        public override async Task DecryptWithMode(string fileToDecrypt, string decryptResultFile)
         {
-            Execute(fileToDecrypt, decryptResultFile, CryptOperation.DECRYPT);
+            await Execute(fileToDecrypt, decryptResultFile, CryptOperation.DECRYPT);
         }
 
-        public override void EncryptWithMode(string fileToEncrypt, string encryptResultFile)
+        public override async Task EncryptWithMode(string fileToEncrypt, string encryptResultFile)
         {
-            Execute(fileToEncrypt, encryptResultFile, CryptOperation.ENCRYPT);
+            await Execute(fileToEncrypt, encryptResultFile, CryptOperation.ENCRYPT);
         }
 
         public void InsertHashInFile(FileDataLoader loader)
@@ -52,7 +52,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             return loader.GetHashValue();
         }
 
-        private void Execute(string inputFile, string outputFile, CryptOperation cryptOperation)
+        private async Task Execute(string inputFile, string outputFile, CryptOperation cryptOperation)
         {
             FileDataLoader loader = new(inputFile, outputFile);
             long hashCode = 0;

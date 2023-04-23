@@ -8,8 +8,8 @@ namespace XTR_TWOFISH.CypherModes
 {
     public interface IModeEncryption
     {
-        public void EncryptWithMode(string fileToEncrypt, string encryptResultFile);
+        public Task EncryptWithMode(string fileToEncrypt, string encryptResultFile);
                
-        public void DecryptWithMode(string fileToDecrypt, string decryptResultFile);
+        public Task DecryptWithMode(string fileToDecrypt, string decryptResultFile);
     }
 }

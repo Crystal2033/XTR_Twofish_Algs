@@ -24,7 +24,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             _initVector = initVector;
         }
 
-        public override void DecryptWithMode(string fileToDecrypt, string decryptResultFile)
+        public override async Task DecryptWithMode(string fileToDecrypt, string decryptResultFile)
         {
             FileDataLoader loader = new(fileToDecrypt, decryptResultFile);
             _prevEncryptedTextBlock = (byte[])loader.TextBlock.Clone();
@@ -79,7 +79,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             loader.CloseStreams();
         }
 
-        public override void EncryptWithMode(string fileToEncrypt, string encryptResultFile)
+        public override async Task EncryptWithMode(string fileToEncrypt, string encryptResultFile)
         {
             FileDataLoader loader = new(fileToEncrypt, encryptResultFile);
             int curPosInTextBlock;

@@ -55,21 +55,23 @@ namespace XTR_TWOFISH.Presenters
             return true;
         }
 
-        public static void DemonstrateMode(string inFile, string encryptFile, string decryptFile, CypherMode mode, byte[] mainKey, byte[] initVector=null, params object[] optionalParams)
+        public static async Task DemonstrateMode(string inFile, string encryptFile, string decryptFile, CypherMode mode, byte[] mainKey, byte[] initVector=null, params object[] optionalParams)
         {
 
             AdvancedCypherSym advancedCypherSym = new(mainKey, mode, CypherEnums.SymmetricAlgorithm.TWOFISH, initVector);
-            Task.Run(() =>
-            {
-                advancedCypherSym.Encrypt(inFile, encryptFile);
-            }).Wait();
-            Console.WriteLine($"Encrypt {mode} is done");
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            // the code that you want to measure comes here
+            
+            await advancedCypherSym.EncryptAsync(inFile, encryptFile);
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.WriteLine(elapsedMs.ToString(), " ms");
 
-            Task.Run(() =>
-            {
-                advancedCypherSym.Decrypt(encryptFile, decryptFile);
-            }).Wait();
-            Console.WriteLine($"Decrypt {mode} is done");
+            Console.WriteLine($"EncryptAsync {mode} is done");
+
+            await advancedCypherSym.DecryptAsync(encryptFile, decryptFile);
+
+            Console.WriteLine($"DecryptAsync {mode} is done");
 
             if (!CheckFilesEquals(inFile, decryptFile))
             {
@@ -86,82 +88,5 @@ namespace XTR_TWOFISH.Presenters
                 Console.ForegroundColor = tmp;
             }
         }
-        //public void encrypt(string userFile, string encryptTo)
-        //{
-        //    try
-        //    {
-        //        using (var inStream = File.Open(userFile, FileMode.Open))
-        //        using (var outSream = File.Open(encryptTo, FileMode.OpenOrCreate))
-        //        {
-
-        //            using (BinaryReader reader = new BinaryReader(inStream, Encoding.UTF8))
-        //            using (BinaryWriter writer = new BinaryWriter(outSream, Encoding.UTF8))
-        //            {
-        //                byte[] textBlock = new byte[2048];
-        //                byte[] currentPart = new byte[8];
-        //                int writtenBytes;
-        //                while ((writtenBytes = reader.Read(textBlock, 0, textBlock.Length)) != 0)
-        //                {
-        //                    int textPartsCounter = 0;
-        //                    while (textPartsCounter * CryptConstants.TWOFISH_PART_TEXT_BYTES < writtenBytes)
-        //                    {
-        //                        CryptSimpleFunctions.GetNewPartOfText(textBlock, currentPart, textPartsCounter * CryptConstants.TWOFISH_PART_TEXT_BYTES);
-        //                        textPartsCounter++;
-        //                        byte[] cipher = _symmetricImplementation.Encrypt(ref currentPart);
-        //                        writer.Write(cipher);
-        //                    }
-        //                }
-
-        //            }
-
-        //        }
-        //    }
-        //    catch (Exception ae)
-        //    {
-        //        _log.Error(ae);
-        //    }
-        //}
-
-        //public void decrypt(string encryptedFile, string decryptTo)
-        //{
-        //    //need to check that in encrypt file is always divided by 8. 1 byte in encrypted file is not correct file value
-        //    using (var inStream = File.Open(encryptedFile, FileMode.OpenOrCreate))
-        //    using (var outSream = File.Open(decryptTo, FileMode.OpenOrCreate))
-        //    {
-
-        //        using (BinaryReader reader = new BinaryReader(inStream, Encoding.UTF8))
-        //        using (BinaryWriter writer = new BinaryWriter(outSream, Encoding.UTF8))
-        //        {
-        //            byte[] cryptedTextBlock = new byte[2048];
-        //            byte[] currentPart = new byte[8];
-        //            if(inStream.Length % CryptConstants.BITS_IN_BYTE != 0){
-        //                Console.WriteLine($"Encryption file error! Size is not divide by 8. Length = {inStream.Length}");
-        //            }
-
-        //            int writtenBytes;
-        //            while ((writtenBytes = reader.Read(cryptedTextBlock, 0, cryptedTextBlock.Length)) != 0)
-        //            {
-        //                int textPartsCounter = 0;
-        //                while (textPartsCounter * CryptConstants.DES_PART_TEXT_BYTES < writtenBytes)
-        //                {
-        //                    CryptSimpleFunctions.GetNewPartOfText(cryptedTextBlock, currentPart, textPartsCounter * CryptConstants.DES_PART_TEXT_BYTES);
-        //                    textPartsCounter++;
-        //                    byte[] plainText = _symmetricImplementation.Decrypt(ref currentPart);
-        //                    int remainedBytes = cryptedTextBlock.Length - textPartsCounter * CryptConstants.DES_PART_TEXT_BYTES;
-        //                    if (remainedBytes < 0)
-        //                    {
-        //                        CryptSimpleFunctions.ClearBytes(ref plainText, CryptConstants.DES_PART_TEXT_BYTES - Math.Abs(remainedBytes));
-        //                    }
-        //                    writer.Write(plainText);
-        //                }
-        //            }
-
-        //        }
-
-        //    }
-
-
-            
-        //}
     }
 }

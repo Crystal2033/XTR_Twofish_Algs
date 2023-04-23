@@ -19,17 +19,17 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
         {
 
         }
-        public override void DecryptWithMode(string fileToDecrypt, string decryptResultFile)
+        public override async Task DecryptWithMode(string fileToDecrypt, string decryptResultFile)
         {
-            Execute(fileToDecrypt, decryptResultFile, CryptOperation.DECRYPT);
+            await Execute(fileToDecrypt, decryptResultFile, CryptOperation.DECRYPT);
         }
 
-        public override void EncryptWithMode(string fileToEncrypt, string encryptResultFile)
+        public override async Task EncryptWithMode(string fileToEncrypt, string encryptResultFile)
         {
-            Execute(fileToEncrypt, encryptResultFile, CryptOperation.ENCRYPT);
+            await Execute(fileToEncrypt, encryptResultFile, CryptOperation.ENCRYPT);
         }
 
-        private void Execute(string inputFile, string outputFile, CryptOperation cryptOperation)
+        private async Task Execute(string inputFile, string outputFile, CryptOperation cryptOperation)
         {
             FileDataLoader loader = new(inputFile, outputFile);
             if(cryptOperation == CryptOperation.DECRYPT)

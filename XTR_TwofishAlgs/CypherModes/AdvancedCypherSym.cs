@@ -77,14 +77,14 @@ namespace XTR_TWOFISH.CypherModes
             }
         }
 
-        public void Encrypt(in string fileToEncrypt, in string encryptResultFile)
+        public async Task EncryptAsync(string fileToEncrypt, string encryptResultFile)
         {
-            _encriptionModeImpl?.EncryptWithMode(fileToEncrypt, encryptResultFile);
+            await _encriptionModeImpl?.EncryptWithMode(fileToEncrypt, encryptResultFile);
         }
 
-        public void Decrypt(in string fileToDecrypt, in string decryptResultFile)
+        public async Task DecryptAsync(string fileToDecrypt, string decryptResultFile)
         {
-            _encriptionModeImpl?.DecryptWithMode(fileToDecrypt, decryptResultFile);
+            await _encriptionModeImpl?.DecryptWithMode(fileToDecrypt, decryptResultFile);
         }
 
     }

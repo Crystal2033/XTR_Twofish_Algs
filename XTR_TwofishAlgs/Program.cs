@@ -52,29 +52,30 @@ internal class Program
             FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction) { MainKey = mainKey };
 
             //AdvancedCypherSym advancedCypher = new(mainKey, XTR_TWOFISH.CypherEnums.CypherMode.ECB, XTR_TWOFISH.CypherEnums.SymmetricAlgorithm.TWOFISH, initVector);
-            //advancedCypher.Encrypt(MAINPATH + @"Text\CheckText.txt", MAINPATH + @"Text\EncryptECB.txt");
+            //advancedCypher.EncryptAsync(MAINPATH + @"Text\CheckText.txt", MAINPATH + @"Text\EncryptECB.txt");
 
-            //advancedCypher.Decrypt(MAINPATH + @"Text\EncryptECB.txt", MAINPATH + @"Text\DecryptECB.txt");
+            //advancedCypher.DecryptAsync(MAINPATH + @"Text\EncryptECB.txt", MAINPATH + @"Text\DecryptECB.txt");
+
             DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptECB.mp4",
-                MAINPATH + CHILDPATH + @"DecryptECB.mp4", XTR_TWOFISH.CypherEnums.CypherMode.ECB, mainKey, initVector);
+                MAINPATH + CHILDPATH + @"DecryptECB.mp4", XTR_TWOFISH.CypherEnums.CypherMode.ECB, mainKey, initVector).Wait();
 
             DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptCBC.mp4",
-                MAINPATH + CHILDPATH + @"DecryptCBC.mp4", XTR_TWOFISH.CypherEnums.CypherMode.CBC, mainKey, initVector);
+                MAINPATH + CHILDPATH + @"DecryptCBC.mp4", XTR_TWOFISH.CypherEnums.CypherMode.CBC, mainKey, initVector).Wait();
 
             DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptCFB.mp4",
-                MAINPATH + CHILDPATH + @"DecryptCFB.mp4", XTR_TWOFISH.CypherEnums.CypherMode.CFB, mainKey, initVector);
+                MAINPATH + CHILDPATH + @"DecryptCFB.mp4", XTR_TWOFISH.CypherEnums.CypherMode.CFB, mainKey, initVector).Wait();
 
             DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptOFB.mp4",
-                MAINPATH + CHILDPATH + @"DecryptOFB.mp4", XTR_TWOFISH.CypherEnums.CypherMode.OFB, mainKey, initVector);
+                MAINPATH + CHILDPATH + @"DecryptOFB.mp4", XTR_TWOFISH.CypherEnums.CypherMode.OFB, mainKey, initVector).Wait();
 
             DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptCTR.mp4",
-                MAINPATH + CHILDPATH + @"DecryptCTR.mp4", XTR_TWOFISH.CypherEnums.CypherMode.CTR, mainKey, initVector);
+                MAINPATH + CHILDPATH + @"DecryptCTR.mp4", XTR_TWOFISH.CypherEnums.CypherMode.CTR, mainKey, initVector).Wait();
 
             DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptRD.mp4",
-                MAINPATH + CHILDPATH + @"DecryptRD.mp4", XTR_TWOFISH.CypherEnums.CypherMode.RD, mainKey, initVector);
+                MAINPATH + CHILDPATH + @"DecryptRD.mp4", XTR_TWOFISH.CypherEnums.CypherMode.RD, mainKey, initVector).Wait();
 
             DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptRDH.mp4",
-                MAINPATH + CHILDPATH + @"DecryptRDH.mp4", XTR_TWOFISH.CypherEnums.CypherMode.RDH, mainKey, initVector);
+                MAINPATH + CHILDPATH + @"DecryptRDH.mp4", XTR_TWOFISH.CypherEnums.CypherMode.RDH, mainKey, initVector).Wait();
 
             //for (int i = 1; i < 50; i++)
             //{
