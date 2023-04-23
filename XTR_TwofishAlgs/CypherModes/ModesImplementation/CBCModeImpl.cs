@@ -43,7 +43,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             Barrier barrier = new Barrier(ThreadsInfo.VALUE_OF_THREAD, (bar) =>
             {
                 _prevEncryptedTextBlock = (byte[])_currEncryptedTextBlock.Clone();
-                loader.reloadTextBlockAndOutputInFile();
+                loader.ReloadTextBlockAndOutputInFile();
                 _currEncryptedTextBlock = (byte[])loader.TextBlock.Clone();
                 for (int i = 0; i < ThreadsInfo.VALUE_OF_THREAD; i++)
                 {
@@ -101,7 +101,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
                     TextBlockOperations.InsertPartInTextBlock(curPosInTextBlock, cryptedPartOfText, cryptedPartOfText.Length, loader);
                     curPosInTextBlock += partOfTextBlock.Length;
                 }
-                loader.reloadTextBlockAndOutputInFile();
+                loader.ReloadTextBlockAndOutputInFile();
             }
             loader.CloseStreams();
         }

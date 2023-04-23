@@ -76,7 +76,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
 
             Barrier barrier = new Barrier(ThreadsInfo.VALUE_OF_THREAD, (bar) =>
             {
-                loader.reloadTextBlockAndOutputInFile();
+                loader.ReloadTextBlockAndOutputInFile();
 
                 if (loader.FactTextBlockSize == 0) // There is nothing to read
                 {

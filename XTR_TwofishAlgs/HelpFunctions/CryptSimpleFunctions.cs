@@ -207,8 +207,6 @@ namespace XTR_TwofishAlgs.HelpFunctions
             resultByte = ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge);
             resultByte = (byte)((resultByte << (rightEdge - leftEdge - shiftValue)) | (resultByte >> shiftValue)); //shifting in small range of bits in byte
             resultByte = ShakeAndDropNotNeededNitsInByte(resultByte, leftEdge, rightEdge);
-            
-
             return (byte)(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
         }
 

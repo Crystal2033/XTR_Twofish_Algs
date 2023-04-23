@@ -30,8 +30,8 @@ namespace XTR_TWOFISH.Presenters
 
         public static bool CheckFilesEquals(string first, string second)
         {
-            byte[] buffer1 = new byte[2048];
-            byte[] buffer2 = new byte[2048];
+            byte[] buffer1 = new byte[16384];
+            byte[] buffer2 = new byte[16384];
             using (FileStream mainFileStream = File.OpenRead(first))
             using (FileStream decryptedFileStream = File.OpenRead(second))
             {

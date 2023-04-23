@@ -42,7 +42,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
 
                     posInTextBlock += realPlainTextPartSize;
                 }
-                loader.reloadTextBlockAndOutputInFile();
+                loader.ReloadTextBlockAndOutputInFile();
             }
             loader.CloseStreams();
         }
@@ -75,7 +75,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
                     TextBlockOperations.InsertPartInTextBlock(curPosInTextBlock, cypherText, cypherText.Length, loader);
                     curPosInTextBlock += cypherText.Length;
                 }
-                loader.reloadTextBlockAndOutputInFile();
+                loader.ReloadTextBlockAndOutputInFile();
             }
             loader.CloseStreams();
         }
