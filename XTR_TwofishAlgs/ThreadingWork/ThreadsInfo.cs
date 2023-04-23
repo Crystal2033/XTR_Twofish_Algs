@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XTR_TWOFISH.CypherEnums
+namespace XTR_TWOFISH.ThreadingWork
 {
-    public enum SymmetricAlgorithm
+    public static class ThreadsInfo
     {
-        TWOFISH
+        public static readonly int VALUE_OF_THREAD = 6; 
     }
 }

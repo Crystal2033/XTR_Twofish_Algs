@@ -1,0 +1,45 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using XTR_TWOFISH.ThreadingWork;
+using XTR_TwofishAlgs.HelpFunctions;
+
+namespace XTR_TWOFISH.HelpFunctionsAndData
+{
+    public static class TextBlockOperations
+    {
+        public static byte[] GetPartOfTextBlock(int posInTextBlock, FileDataLoader loader, int textBlockSize)
+        {
+            byte[] partOfTextBlock = new byte[textBlockSize];
+            int readTextSize = (loader.FactTextBlockSize - posInTextBlock < textBlockSize) ? loader.FactTextBlockSize - posInTextBlock : partOfTextBlock.Length;
+            for (int i = 0; i < readTextSize; i++)
+            {
+                partOfTextBlock[i] = loader.TextBlock[posInTextBlock + i];
+            }
+            loader.FactTextBlockSize += partOfTextBlock.Length - readTextSize;
+            CryptSimpleFunctions.PKCS7Padding(partOfTextBlock, readTextSize);
+            return partOfTextBlock;
+        }
+
+        public static byte[] GetPartOfTextBlockWithoutPadding(int posInTextBlock, byte[] textBlock, int textBlockSize)
+        {
+            byte[] partOfTextBlock = new byte[textBlockSize];
+            for (int i = 0; i < partOfTextBlock.Length; i++)
+            {
+                partOfTextBlock[i] = textBlock[posInTextBlock + i];
+            }
+            return partOfTextBlock;
+        }
+
+        public static void InsertPartInTextBlock(int posInTextBlock, byte[] source, int sourceSize, FileDataLoader loader)
+        {
+            for (int i = 0; i < sourceSize; i++)
+            {
+                loader.TextBlock[posInTextBlock + i] = source[i];
+            }
+        }
+    }
+}

@@ -46,19 +46,20 @@ internal class Program
         {
             FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction) { MainKey = mainKey };
 
-            for (int i = 1; i < 50; i++)
-            {
-                var savedColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{i}");
-                Console.ForegroundColor = savedColor;
-                CryptSimpleFunctions.ShowHexView(plainText, "Start PT");
-                byte[] cipher = feistelKernel.Execute(plainText, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
-                CryptSimpleFunctions.ShowHexView(cipher, "CT");
-                plainText = feistelKernel.Execute(cipher, XTR_TWOFISH.CypherEnums.CryptOperation.DECRYPT);
-                CryptSimpleFunctions.ShowHexView(plainText, "Result PT");
-                plainText = cipher;
-            }
+
+            //for (int i = 1; i < 50; i++)
+            //{
+            //    var savedColor = Console.ForegroundColor;
+            //    Console.ForegroundColor = ConsoleColor.Green;
+            //    Console.WriteLine($"{i}");
+            //    Console.ForegroundColor = savedColor;
+            //    CryptSimpleFunctions.ShowHexView(plainText, "Start PT");
+            //    byte[] cipher = feistelKernel.Execute(plainText, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
+            //    CryptSimpleFunctions.ShowHexView(cipher, "CT");
+            //    plainText = feistelKernel.Execute(cipher, XTR_TWOFISH.CypherEnums.CryptOperation.DECRYPT);
+            //    CryptSimpleFunctions.ShowHexView(plainText, "Result PT");
+            //    plainText = cipher;
+            //}
         }
         catch(GaloisOutOfFieldException ex)
         {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XTR_TWOFISH.CypherEnums;
 using XTR_TWOFISH.CryptInterfaces;
+using XTR_TWOFISH.ThreadingWork;
 
 namespace XTR_TwofishAlgs.HelpFunctions
 {
@@ -85,19 +86,19 @@ namespace XTR_TwofishAlgs.HelpFunctions
             }
         }
 
-        //public static int GetPureTextWithoutPaddingSize(ref byte[] checkingBytes, FileDataLoader loader)
-        //{
-        //    int realCypherPartSize = CryptConstants.DES_PART_TEXT_BYTES;
+        public static int GetPureTextWithoutPaddingSize(ref byte[] checkingBytes, FileDataLoader loader)
+        {
+            int realCypherPartSize = CryptConstants.TWOFISH_PART_TEXT_BYTES;
 
-        //    byte lastByteValue = checkingBytes[checkingBytes.Length - 1];
-        //    if (lastByteValue < CryptConstants.DES_PART_TEXT_BYTES) //There is a padding PKCS7
-        //    {
-        //        loader.FactTextBlockSize -= lastByteValue;
-        //        realCypherPartSize = CryptConstants.DES_PART_TEXT_BYTES - lastByteValue;
-        //        ClearBytes(ref checkingBytes, checkingBytes.Length - lastByteValue);
-        //    }
-        //    return realCypherPartSize;
-        //}
+            byte lastByteValue = checkingBytes[checkingBytes.Length - 1];
+            if (lastByteValue < CryptConstants.TWOFISH_PART_TEXT_BYTES) //There is a padding PKCS7
+            {
+                loader.FactTextBlockSize -= lastByteValue;
+                realCypherPartSize = CryptConstants.TWOFISH_PART_TEXT_BYTES - lastByteValue;
+                ClearBytes(checkingBytes, checkingBytes.Length - lastByteValue);
+            }
+            return realCypherPartSize;
+        }
 
         public static byte GetBitFromPos(in byte myByte, byte index0FromLeft)
         {
@@ -286,9 +287,9 @@ namespace XTR_TwofishAlgs.HelpFunctions
 
         public static void PKCS7Padding(byte[] bytes, int actualSize)
         {
-            for (int i = actualSize; i < CryptConstants.DES_PART_TEXT_BYTES; i++)
+            for (int i = actualSize; i < CryptConstants.TWOFISH_PART_TEXT_BYTES; i++)
             {
-                bytes[i] = (byte)(CryptConstants.DES_PART_TEXT_BYTES - actualSize);
+                bytes[i] = (byte)(CryptConstants.TWOFISH_PART_TEXT_BYTES - actualSize);
             }
         }
 
@@ -316,16 +317,21 @@ namespace XTR_TwofishAlgs.HelpFunctions
         public static void GetNewPartOfText(in byte[] textInBytes, byte[] buffer, int startIndex)
         {
             int textSizeWithoutBlock = textInBytes.Length - startIndex;
-            int pureTextSize = (textSizeWithoutBlock < CryptConstants.DES_PART_TEXT_BYTES && textSizeWithoutBlock != 0)
-                ? textSizeWithoutBlock % CryptConstants.DES_PART_TEXT_BYTES
-                : CryptConstants.DES_PART_TEXT_BYTES;
+            int pureTextSize = (textSizeWithoutBlock < CryptConstants.TWOFISH_PART_TEXT_BYTES && textSizeWithoutBlock != 0)
+                ? textSizeWithoutBlock % CryptConstants.TWOFISH_PART_TEXT_BYTES
+                : CryptConstants.TWOFISH_PART_TEXT_BYTES;
 
             Array.Copy(textInBytes, startIndex, buffer, 0, pureTextSize);
 
-            if (pureTextSize != CryptConstants.DES_PART_TEXT_BYTES)
+            if (pureTextSize != CryptConstants.TWOFISH_PART_TEXT_BYTES)
             {
                 PKCS7Padding(buffer, pureTextSize);
             }
+        }
+
+        internal static byte[] GetBytesAfterCryptOperation(object eNCRYPT, ref byte[] xoredMessage, ISymmetricEncryption cryptAlgorithm)
+        {
+            throw new NotImplementedException();
         }
     }
 }
