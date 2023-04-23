@@ -42,7 +42,7 @@ namespace XTR_TWOFISH.CypherModes
             switch (algType)
             {
                 case SymmetricAlgorithm.TWOFISH:
-                    _textBlockSizeInBytes = CryptConstants.TWOFISH_PART_TEXT_BYTES;
+                    _textBlockSizeInBytes = 16;
                     IKeyExpansion keyExpansion = new KeyExpansionTwoFish();
                     IFeistelFunction feistelFunction = new TwofishFeistelFuncImpl();
                     FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction) { MainKey = _cypherKey };

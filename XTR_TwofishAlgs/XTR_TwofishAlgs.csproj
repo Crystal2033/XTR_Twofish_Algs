@@ -9,6 +9,9 @@
 
   <ItemGroup>
     <Folder Include="CryptInterfaces\" />
+    <Folder Include="Data\Music\" />
+    <Folder Include="Data\Photo\" />
+    <Folder Include="Data\Video\" />
   </ItemGroup>
 
   <ItemGroup>

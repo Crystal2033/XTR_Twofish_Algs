@@ -21,8 +21,10 @@ namespace XTR_TWOFISH.ThreadingWork
 		}
 
 		private int currentPosInFile;
+		public int CurrentPosInFile { get => currentPosInFile; set => currentPosInFile = value; }
 		private BinaryReader _fileReadFrom;
 		private BinaryWriter _fileWriteTo;
+
 
         public FileDataLoader(string fileReadFrom, string fileWriteTo)
 		{

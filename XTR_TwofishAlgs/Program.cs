@@ -3,7 +3,9 @@ using System.Drawing;
 using System.Numerics;
 using System.Reflection;
 using XTR_TWOFISH.CryptInterfaces;
+using XTR_TWOFISH.CypherModes;
 using XTR_TWOFISH.FeistelImplementation;
+using XTR_TWOFISH.Presenters;
 using XTR_TwofishAlgs.Exceptions;
 using XTR_TwofishAlgs.FeistelImplementation;
 using XTR_TwofishAlgs.HelpFunctions;
@@ -29,23 +31,50 @@ internal class Program
         //byte[] mainKey = new byte[24] { 0x01, 0x23, 0x45, 0x67, 0x89,
         //    0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba,
         //    0x98, 0x76, 0x54, 0x32, 0x10, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66,0x77};
-        //byte[] mainKey = new byte[32] { 0x01, 0x23, 0x45, 0x67, 0x89,
-        //    0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba,
-        //    0x98, 0x76, 0x54, 0x32, 0x10, 0x00, 0x11, 0x22,
-        //    0x33, 0x44, 0x55, 0x66,0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
-        byte[] mainKey = new byte[33] {
-        0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
-        0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
-        0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
-        0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0, 0x0};
+        byte[] mainKey = new byte[32] { 0x01, 0x23, 0x45, 0x67, 0x89,
+            0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba,
+            0x98, 0x76, 0x54, 0x32, 0x10, 0x00, 0x11, 0x22,
+            0x33, 0x44, 0x55, 0x66,0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
+        //byte[] mainKey = new byte[32] {
+        //0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        //0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        //0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+        //0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0};
 
-        //byte[] initVector = new byte[8] { 125, 67, 111, 110, 203, 211, 255, 11 };
+        byte[] initVector = new byte[16] { 125, 67, 111, 110, 203, 211, 255, 11, 125, 67, 111, 110, 203, 211, 255, 11 };
         IKeyExpansion keyExpansion = new KeyExpansionTwoFish();
         IFeistelFunction feistelFunction = new TwofishFeistelFuncImpl();
         try
         {
+            string MAINPATH = @"D:\Paul\Programming\C#\XTR_Twofish\XTR_TwofishAlgs\XTR_TwofishAlgs\Data\";
+            string CHILDPATH = @"Video\";
+            string FILENAME = @"TestVideo.mp4";
             FeistelNetwork feistelKernel = new FeistelNetwork(keyExpansion, feistelFunction) { MainKey = mainKey };
 
+            //AdvancedCypherSym advancedCypher = new(mainKey, XTR_TWOFISH.CypherEnums.CypherMode.ECB, XTR_TWOFISH.CypherEnums.SymmetricAlgorithm.TWOFISH, initVector);
+            //advancedCypher.Encrypt(MAINPATH + @"Text\CheckText.txt", MAINPATH + @"Text\EncryptECB.txt");
+
+            //advancedCypher.Decrypt(MAINPATH + @"Text\EncryptECB.txt", MAINPATH + @"Text\DecryptECB.txt");
+            DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptECB.mp4",
+                MAINPATH + CHILDPATH + @"DecryptECB.mp4", XTR_TWOFISH.CypherEnums.CypherMode.ECB, mainKey, initVector);
+
+            DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptCBC.mp4",
+                MAINPATH + CHILDPATH + @"DecryptCBC.mp4", XTR_TWOFISH.CypherEnums.CypherMode.CBC, mainKey, initVector);
+
+            DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptCFB.mp4",
+                MAINPATH + CHILDPATH + @"DecryptCFB.mp4", XTR_TWOFISH.CypherEnums.CypherMode.CFB, mainKey, initVector);
+
+            DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptOFB.mp4",
+                MAINPATH + CHILDPATH + @"DecryptOFB.mp4", XTR_TWOFISH.CypherEnums.CypherMode.OFB, mainKey, initVector);
+
+            DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptCTR.mp4",
+                MAINPATH + CHILDPATH + @"DecryptCTR.mp4", XTR_TWOFISH.CypherEnums.CypherMode.CTR, mainKey, initVector);
+
+            DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptRD.mp4",
+                MAINPATH + CHILDPATH + @"DecryptRD.mp4", XTR_TWOFISH.CypherEnums.CypherMode.RD, mainKey, initVector);
+
+            DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptRDH.mp4",
+                MAINPATH + CHILDPATH + @"DecryptRDH.mp4", XTR_TWOFISH.CypherEnums.CypherMode.RDH, mainKey, initVector);
 
             //for (int i = 1; i < 50; i++)
             //{

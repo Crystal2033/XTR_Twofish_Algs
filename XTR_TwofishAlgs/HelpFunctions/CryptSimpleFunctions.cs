@@ -86,13 +86,36 @@ namespace XTR_TwofishAlgs.HelpFunctions
             }
         }
 
-        public static int GetPureTextWithoutPaddingSize(ref byte[] checkingBytes, FileDataLoader loader)
+        public static int GetPureTextWithoutPaddingSize(ref byte[] checkingBytes, FileDataLoader loader, int curTextPos)
         {
             int realCypherPartSize = CryptConstants.TWOFISH_PART_TEXT_BYTES;
 
-            byte lastByteValue = checkingBytes[checkingBytes.Length - 1];
-            if (lastByteValue < CryptConstants.TWOFISH_PART_TEXT_BYTES) //There is a padding PKCS7
+            if(loader.TextReadSize - loader.CurrentPosInFile > curTextPos)
             {
+                return realCypherPartSize;
+            }
+            if(loader.FactTextBlockSize - curTextPos > realCypherPartSize) //its not end of block. It cannot be a padding
+            {
+                return realCypherPartSize;
+            }
+
+            byte lastByteValue = checkingBytes[checkingBytes.Length - 1];
+
+            if (lastByteValue < CryptConstants.TWOFISH_PART_TEXT_BYTES && lastByteValue != 0) //There is a probably padding PKCS7
+            {
+                if(checkingBytes[checkingBytes.Length - lastByteValue - 1] == lastByteValue)
+                {
+                    return realCypherPartSize;
+                }
+                
+                for(int i = 0; i < lastByteValue; i++)
+                {
+                    if (checkingBytes[checkingBytes.Length - lastByteValue + i] != lastByteValue)
+                    {
+                        return realCypherPartSize;
+                    }
+                }
+               
                 loader.FactTextBlockSize -= lastByteValue;
                 realCypherPartSize = CryptConstants.TWOFISH_PART_TEXT_BYTES - lastByteValue;
                 ClearBytes(checkingBytes, checkingBytes.Length - lastByteValue);

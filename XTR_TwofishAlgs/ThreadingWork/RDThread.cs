@@ -41,7 +41,8 @@ namespace XTR_TWOFISH.ThreadingWork
                 {
                     long newCounter = _threadId + absWrittenBytes * ThreadsInfo.VALUE_OF_THREAD + _delta;
 
-                    byte[] newInitVector = BitConverter.GetBytes(newCounter + initVectorAsNumber);
+                    byte[] newInitVector = CryptSimpleFunctions.ConcatTwoBitParts(BitConverter.GetBytes(newCounter + initVectorAsNumber), 64,
+                        BitConverter.GetBytes(newCounter + initVectorAsNumber), 64);
 
                     byte[] cryptedBytes = CryptSimpleFunctions.GetBytesAfterCryptOperation(CryptOperation.ENCRYPT,
                         ref newInitVector, _algorithm);
@@ -53,7 +54,7 @@ namespace XTR_TWOFISH.ThreadingWork
 
                     if (cryptOperation == CryptOperation.DECRYPT) // checking padding for decryption
                     {
-                        realCypherPartSize = CryptSimpleFunctions.GetPureTextWithoutPaddingSize(ref totalCyphredBytes, _loader);
+                        realCypherPartSize = CryptSimpleFunctions.GetPureTextWithoutPaddingSize(ref totalCyphredBytes, _loader, posInTextBlock);
                     }
 
                     TextBlockOperations.InsertPartInTextBlock(posInTextBlock, totalCyphredBytes, realCypherPartSize, _loader);

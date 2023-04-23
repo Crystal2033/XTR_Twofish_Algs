@@ -58,14 +58,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             long hashCode = 0;
             if(_hash != null)
             {
-                //if (cryptOperation == CryptOperation.ENCRYPT)
-                //{
-                //    InsertHashInFile(loader);
-                //}
-                //else
-                //{
-                //    hashCode = GetHashFromFile(loader);
-                //}
+                //do with your hash what you want!
             }
 
             if (cryptOperation == CryptOperation.DECRYPT)

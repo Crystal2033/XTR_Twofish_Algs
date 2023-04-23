@@ -32,6 +32,7 @@ namespace XTR_TWOFISH.ThreadingWork
             byte[] partOfTextBlock;
             byte[] plainPartOfText;
             byte[] prevCypheredPartOfText;
+            int realCypherPartSize = _textBlockSizeInBytes;
             while (_loader.FactTextBlockSize != 0)
             {
                 while (posInTextBlock < _loader.FactTextBlockSize)
@@ -44,9 +45,9 @@ namespace XTR_TWOFISH.ThreadingWork
 
                     plainPartOfText = CryptSimpleFunctions.XorByteArrays(prevCypheredPartOfText, decryptedBytes);
 
-                    _textBlockSizeInBytes = CryptSimpleFunctions.GetPureTextWithoutPaddingSize(ref plainPartOfText, _loader);
+                    realCypherPartSize = CryptSimpleFunctions.GetPureTextWithoutPaddingSize(ref plainPartOfText, _loader, posInTextBlock);
 
-                    TextBlockOperations.InsertPartInTextBlock(posInTextBlock, plainPartOfText, _textBlockSizeInBytes, _loader);
+                    TextBlockOperations.InsertPartInTextBlock(posInTextBlock, plainPartOfText, realCypherPartSize, _loader);
 
                     BytesTransformedInBlock++;
                     posInTextBlock = (BytesTransformedInBlock * ThreadsInfo.VALUE_OF_THREAD + _threadId) * _textBlockSizeInBytes;

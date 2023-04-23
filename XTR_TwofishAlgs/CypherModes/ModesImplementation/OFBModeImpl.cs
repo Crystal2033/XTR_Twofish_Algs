@@ -37,7 +37,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
                 while (posInTextBlock < loader.FactTextBlockSize)
                 {
                     prevCypheredPartOfText = GetCryptValue(cypheredInitVector, loader, posInTextBlock, out cypheredInitVector);
-                    realPlainTextPartSize = CryptSimpleFunctions.GetPureTextWithoutPaddingSize(ref prevCypheredPartOfText, loader);
+                    realPlainTextPartSize = CryptSimpleFunctions.GetPureTextWithoutPaddingSize(ref prevCypheredPartOfText, loader, posInTextBlock);
                     TextBlockOperations.InsertPartInTextBlock(posInTextBlock, prevCypheredPartOfText, realPlainTextPartSize, loader);
 
                     posInTextBlock += realPlainTextPartSize;

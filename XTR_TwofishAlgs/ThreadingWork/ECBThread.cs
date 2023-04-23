@@ -20,7 +20,7 @@ namespace XTR_TWOFISH.ThreadingWork
         {
             CryptOperation cryptOperation = (CryptOperation)obj;
             int posInTextBlock = _threadId * _textBlockSizeInBytes;
-
+            int realCypherPartSize = _textBlockSizeInBytes;
             while (_loader.FactTextBlockSize != 0)
             { 
                 while (posInTextBlock < _loader.FactTextBlockSize)
@@ -28,16 +28,18 @@ namespace XTR_TWOFISH.ThreadingWork
                     byte[] partOfTextBlock = TextBlockOperations.GetPartOfTextBlock(posInTextBlock, _loader, _textBlockSizeInBytes);
 
                     byte[] newBytes = CryptSimpleFunctions.GetBytesAfterCryptOperation(cryptOperation, ref partOfTextBlock, _algorithm);
+                    
                     if (cryptOperation == CryptOperation.DECRYPT) // checking padding for decryption
                     {
-                        _textBlockSizeInBytes = CryptSimpleFunctions.GetPureTextWithoutPaddingSize(ref newBytes, _loader);
+                        realCypherPartSize = CryptSimpleFunctions.GetPureTextWithoutPaddingSize(ref newBytes, _loader, posInTextBlock);
                     }
 
-                    TextBlockOperations.InsertPartInTextBlock(posInTextBlock, newBytes, _textBlockSizeInBytes, _loader);
+                    TextBlockOperations.InsertPartInTextBlock(posInTextBlock, newBytes, realCypherPartSize, _loader);
                     
                     BytesTransformedInBlock++;
                     posInTextBlock = (BytesTransformedInBlock * ThreadsInfo.VALUE_OF_THREAD + _threadId) * _textBlockSizeInBytes;
                 }
+
                 BytesTransformedInBlock = 0;
                 posInTextBlock = _threadId * _textBlockSizeInBytes;
                 _barrier.SignalAndWait();
