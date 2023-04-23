@@ -16,15 +16,12 @@ namespace XTR_TwofishAlgs.TwoFish
         /// </summary>
         /// <param name="X"> Input bytes in h functions (4 bytes)</param>
         /// <param name="sBox">inverted SBoxes generated in KeyExpansion. If h fucntion SBlock is constant tMatrix </param>
-        /// <param name="keySize">KeySize in alg. For k-value(2,3 or 4)</param>
         /// <returns></returns>
-        public static byte[] hFunction(byte[] X, List<byte[]> sBox, TwoFishKeySizes keySize) //out Z
+        public static byte[] hFunction(byte[] X, List<byte[]> sBox, int k) //out Z
         {
-
             byte[] connectBytes = X;
-            if (keySize == TwoFishKeySizes.HARD)
+            if (k == 4)
             {
-                //TODO: for k == 4
                 byte[] zeroBlockRes = new byte[4]
                 {
                     q1Function(connectBytes[0]),
@@ -34,9 +31,8 @@ namespace XTR_TwofishAlgs.TwoFish
                 };
                 connectBytes = CryptSimpleFunctions.XorByteArrays(zeroBlockRes, CryptSimpleFunctions.RevertBytes(sBox[3]));
             }
-            if (keySize == TwoFishKeySizes.HARD || keySize == TwoFishKeySizes.MIDDLE)
+            if (k == 4 || k == 3)
             {
-                //TODO: for k >= 3
                 byte[] firstBlockRes = new byte[4]
                 {
                     q0Function(connectBytes[0]),
@@ -107,16 +103,16 @@ namespace XTR_TwofishAlgs.TwoFish
         {
             byte[] newA = new byte[4];
             byte[] newB = new byte[4];
-            CryptSimpleFunctions.ShowBinaryView(a, "a");
+            //CryptSimpleFunctions.ShowBinaryView(a, "a");
             UInt32 aInt = CryptSimpleFunctions.FromBytesToInt(a, 32);
-            CryptSimpleFunctions.ShowBinaryView(aInt, "aInt");
-            CryptSimpleFunctions.ShowBinaryView(b, "b");
+            //CryptSimpleFunctions.ShowBinaryView(aInt, "aInt");
+            //CryptSimpleFunctions.ShowBinaryView(b, "b");
             UInt32 bInt = CryptSimpleFunctions.FromBytesToInt(b, 32);
-            CryptSimpleFunctions.ShowBinaryView(bInt, "bInt");
+            //CryptSimpleFunctions.ShowBinaryView(bInt, "bInt");
             newA = CryptSimpleFunctions.FromIntToBytes(aInt + bInt);
-            CryptSimpleFunctions.ShowBinaryView(newA, "newA");
+            //CryptSimpleFunctions.ShowBinaryView(newA, "newA");
             newB = CryptSimpleFunctions.FromIntToBytes(aInt + 2 * bInt);
-            CryptSimpleFunctions.ShowBinaryView(newB, "newB");
+            //CryptSimpleFunctions.ShowBinaryView(newB, "newB");
             return (newA, newB);
         }
 

@@ -36,25 +36,7 @@ namespace XTR_TwofishAlgs.FeistelImplementation
 
         private byte[] gFunction(byte[] bytes, List<byte[]> sBox) //bytes here is 32 bits value (1/4 from part of plain text)
         {
-            TwoFishKeySizes keySize;
-            if (sBox.Count == 2)
-            {
-                keySize = TwoFishKeySizes.EASY;
-            }
-            else if (sBox.Count == 3)
-            {
-                keySize = TwoFishKeySizes.MIDDLE;
-            }
-            else if (sBox.Count == 4)
-            {
-                keySize = TwoFishKeySizes.HARD;
-            }
-            else
-            {
-                Console.WriteLine("Wrong sBox size");
-                return null;
-            }
-            byte[] result = TwoFishFunctions.hFunction(bytes, sBox, keySize);
+            byte[] result = TwoFishFunctions.hFunction(bytes, sBox, sBox.Count);
 
             return result;
         }

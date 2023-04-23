@@ -17,24 +17,25 @@ namespace XTR_TwofishAlgs.KeySchedule
 {
     public sealed class KeyExpansionTwoFish : IKeyExpansion
     {
-        public List<byte[]> GenerateRoundKeys(byte[] mainKey, TwoFishKeySizes keySizeInBits, out List<byte[]> sBoxes)
+        public List<byte[]> GenerateRoundKeys(byte[] mainKey, out List<byte[]> sBoxes)
         {
+            CryptSimpleFunctions.ShowHexView(mainKey, "MainKey");
             List<byte[]> roundKeys = new();
 
-            (List<byte[]> sBlock, (List<byte[]> Mo, List<byte[]> Me)) = getBasisOfKeySchedule(mainKey, keySizeInBits);
+            (List<byte[]> sBlock, (List<byte[]> Mo, List<byte[]> Me)) = getBasisOfKeySchedule(mainKey);
             sBoxes = sBlock;
 
-            //TODO: with ro=2^24 + 2^16 + 2^8 + 2^0...
-            // we need 40 keys! 0..39
-            for(byte i = 0; i < 20; i++)
+            int k = mainKey.Length / 8;
+
+            for (byte i = 0; i < 20; i++)
             {
-                byte[] Ai = TwoFishFunctions.hFunction(getFilledBytesWithNumber(4, 2 * i), Me, keySizeInBits);
-                byte[] Bi = CryptSimpleFunctions.CycleLeftShift(TwoFishFunctions.hFunction(getFilledBytesWithNumber(4, (2 * i) + 1), Mo, keySizeInBits), 32, 8);
+                byte[] Ai = TwoFishFunctions.hFunction(getFilledBytesWithNumber(4, 2 * i), Me, k);
+                byte[] Bi = CryptSimpleFunctions.CycleLeftShift(TwoFishFunctions.hFunction(getFilledBytesWithNumber(4, (2 * i) + 1), Mo, k), 32, 8);
                 (byte[]newA, byte[] newB) = TwoFishFunctions.PseudoHadamardTransforms(Ai, Bi);
                 byte[] K2i = newA;
                 byte[] K2iPlus1 = CryptSimpleFunctions.CycleLeftShift(newB, 32, 9);
-                CryptSimpleFunctions.ShowBinaryView(K2i, $"Key[{2 * i}]");
-                CryptSimpleFunctions.ShowBinaryView(K2iPlus1, $"Key[{2 * i + 1}]");
+                CryptSimpleFunctions.ShowHexView(K2i, $"Key[{2 * i}]");
+                CryptSimpleFunctions.ShowHexView(K2iPlus1, $"Key[{2 * i + 1}]");
                 roundKeys.Add(K2i);
                 roundKeys.Add(K2iPlus1);
             }
@@ -53,11 +54,11 @@ namespace XTR_TwofishAlgs.KeySchedule
             return result;
         }
 
-        private (List<byte[]> totalSBlock, (List<byte[]> Mo, List<byte[]> Me)) getBasisOfKeySchedule(byte[] mainKey, TwoFishKeySizes keySizeInBits) 
+        private (List<byte[]> totalSBlock, (List<byte[]> Mo, List<byte[]> Me)) getBasisOfKeySchedule(byte[] mainKey) 
         {
-            int k = (int)keySizeInBits / 64;// M (mainKey) key consists of 8k bytes
-            List<byte[]> Mi = getListOfMi(mainKey, k);
-            (List<byte[]> Mo, List<byte[]> Me) = getMoAndMeVectors(Mi, k);
+            int k = mainKey.Length / 8;
+            List<byte[]> Mi = getListOfMi(mainKey);
+            (List<byte[]> Me, List<byte[]> Mo) = getMoAndMeVectors(Mi);
             List<byte[]> totalSBlock = new();
 
             for (int i = 0; i < k; i++)
@@ -67,25 +68,38 @@ namespace XTR_TwofishAlgs.KeySchedule
                 {
                     packOfMiniM[j] = mainKey[8 * i + j];
                 }
+                CryptSimpleFunctions.ShowHexView(packOfMiniM, $"m");
                 byte[] miniSVector = MatrixOperationsGF256.MultMatrixesTwoFish(TwoFish.TwoFishMatrixes.RS, packOfMiniM, IrreduciblePolynoms.X8X6X3X2_1);
-                //byte[] Si = CryptSimpleFunctions.ConcatBitParts(miniSVector);
+                CryptSimpleFunctions.ShowHexView(miniSVector, $"SVector");
                 totalSBlock.Insert(0, miniSVector);
+            }
+            for(int i = 0; i < totalSBlock.Count; i++)
+            {
+                CryptSimpleFunctions.ShowHexView(totalSBlock[i], $"SBlock{i}");
             }
             return (totalSBlock, (Mo, Me));
         } 
 
-        private List<byte[]> getListOfMi(byte[] preparedKey, int k) //CHECKED
+        private List<byte[]> getListOfMi(byte[] preparedKey) //CHECKED
         {
+            int k = preparedKey.Length / 8;
             List<byte[]> Mi = new List<byte[]>();
             for (int i = 0; i < 2 * k; i++)
             {
-                Mi.Add(CryptSimpleFunctions.ConcatBitParts(preparedKey[4 * i], preparedKey[4 * i + 1],
-                    preparedKey[4 * i + 2], preparedKey[4 * i + 3]));
+                Mi.Add(CryptSimpleFunctions.ConcatBitParts(preparedKey[4 * i + 3], preparedKey[4 * i + 2],
+                    preparedKey[4 * i + 1], preparedKey[4 * i]));
+                Mi[i] = CryptSimpleFunctions.RevertBytes(Mi[i]);
+                //Mi.Add(CryptSimpleFunctions.ConcatBitParts(preparedKey[4 * i + 3], preparedKey[4 * i + 2],
+                //   preparedKey[4 * i + 1], preparedKey[4 * i]));
+            }
+            for(int i = 0; i < Mi.Count; i++)
+            {
+                CryptSimpleFunctions.ShowHexView(Mi[i], $"Mi{i}");
             }
             return Mi;
         }
 
-        private (List<byte[]> Mo, List<byte[]> Me) getMoAndMeVectors(List<byte[]> Mi, int k) //CHECKED
+        private (List<byte[]> Mo, List<byte[]> Me) getMoAndMeVectors(List<byte[]> Mi) //CHECKED
         {
             List<byte[]> Mo = new List<byte[]>();
             List<byte[]> Me = new List<byte[]>();
@@ -93,14 +107,14 @@ namespace XTR_TwofishAlgs.KeySchedule
             {
                 if(i % 2 == 0)
                 {
-                    Mo.Add(Mi[i]);
+                    Me.Add(Mi[i]);
                 }
                 else
                 {
-                    Me.Add(Mi[i]);
+                    Mo.Add(Mi[i]);
                 }
             }
-            return (Mo, Me);
+            return (Me, Mo);
         }
     }
 }

@@ -110,8 +110,8 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         public static uint divideByColumn(uint dividing, uint divider)
         {
             int nextDivider2DegreeGreater = getHighest2DegreeValue(divider);
-            int maxFieldValue = 256;
-            while (dividing > maxFieldValue)
+            int maxFieldValue = 1 << nextDivider2DegreeGreater;
+            while (dividing >= maxFieldValue)
             {
                 //CryptSimpleFunctions.ShowBinaryView(dividing, "dividing");
                 //CryptSimpleFunctions.ShowBinaryView(divider << ((getHighest2DegreeValue(dividing) - nextDivider2DegreeGreater)), "shifted divider");
@@ -127,8 +127,6 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
             GF256 copiedLeft = new GF256(left.Value);
             GF256 copiedRight = new GF256(right.Value);
             uint res = 0;
-            //CryptSimpleFunctions.ShowBinaryView(left.Value, "Left");
-            //CryptSimpleFunctions.ShowBinaryView(right.Value, "Right");
             while (copiedRight.Value != 0)
             {
                 if ((copiedRight.Value & 1) == 1)
@@ -136,13 +134,11 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
                     res ^= copiedLeft.Value;
                 }
                 copiedLeft.Value <<= 1;
-                if((copiedLeft.Value & 0x100) != 0)
+                if ((copiedLeft.Value & 0x100) != 0)
                 {
                     copiedLeft.Value ^= (uint)polynom;
                 }
                 copiedRight.Value >>= 1;
-                //CryptSimpleFunctions.ShowBinaryView(left.Value, "Left");
-                //CryptSimpleFunctions.ShowBinaryView(right.Value, "Right");
             }
             return new GF256(divideByColumn(res, (uint)polynom));
         }

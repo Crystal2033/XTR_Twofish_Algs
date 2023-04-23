@@ -9,6 +9,7 @@ using XTR_TwofishAlgs.HelpFunctions;
 using XTR_TwofishAlgs.KeySchedule;
 using static XTR_TwofishAlgs.HelpFunctions.CryptConstants;
 using XTR_TwofishAlgs.FeistelImplementation;
+using XTR_TwofishAlgs.Exceptions;
 
 namespace XTR_TWOFISH.FeistelImplementation
 {
@@ -18,7 +19,7 @@ namespace XTR_TWOFISH.FeistelImplementation
         private List<byte[]> _raundKeys;
         private readonly int _valueOfRaunds = 16;
         private readonly byte[] _mainKey;
-        private readonly TwoFishKeySizes keySize=TwoFishKeySizes.EASY;
+        //private readonly TwoFishKeySizes keySize=TwoFishKeySizes.EASY;
         private List<byte[]> sBoxes;
         public byte[] MainKey{
             get =>
@@ -26,26 +27,19 @@ namespace XTR_TWOFISH.FeistelImplementation
             
             init {
                 _mainKey = value;
-                _raundKeys = KeyExpander.GenerateRoundKeys(_mainKey, keySize, out sBoxes);
+                prepareMainKey(_mainKey);
+                _raundKeys = KeyExpander.GenerateRoundKeys(_mainKey, out sBoxes);
             }
         }
 
         public IKeyExpansion KeyExpander { get; init; }
         public IFeistelFunction FeistelFunction { get; init; }
-        public FeistelNetwork(IKeyExpansion keyExpander, IFeistelFunction feistelFunction, params object[] additionalInfo){
+        public FeistelNetwork(IKeyExpansion keyExpander, IFeistelFunction feistelFunction){
             KeyExpander = keyExpander;
             FeistelFunction = feistelFunction;
-            if (additionalInfo.Length != 0)
-            {
-                if (additionalInfo[0] is TwoFishKeySizes newKeySize)
-                {
-                    keySize = newKeySize;
-                }
-            }
-
         }
 
-        public byte[] Execute(in byte[] partOfText, int sizeInBits, CryptOperation cryptStatus)
+        public byte[] Execute(in byte[] partOfText, CryptOperation cryptStatus)
         {
             List<byte[]> slicedBlocks = CryptSimpleFunctions.SliceArrayOnArrays(partOfText, 128, 4); //4 bytes in each block
             for(int i = 0; i < slicedBlocks.Count; i++)
@@ -122,6 +116,50 @@ namespace XTR_TWOFISH.FeistelImplementation
                 cryptText[i] = CryptSimpleFunctions.RevertBytes(cryptText[i]);
             }
         }
+
+        private byte[] prepareMainKey(byte[] mainKey)
+        {
+            byte[] newKey;
+            if (mainKey.Length == 16 || mainKey.Length == 24 || mainKey.Length == 32)
+            {
+                return mainKey;
+            }
+            else if(mainKey.Length > 32)
+            {
+                throw new MainKeyException("Your key is not compatible with algorithm. It`s too big. Your value should have 16, 24, 32 bytes length.");
+            }
+            else if(mainKey.Length > 24)
+            {
+                newKey = supplementKeyWithZeroes(mainKey, 32);
+            }
+            else if(mainKey.Length > 16)
+            {
+                newKey = supplementKeyWithZeroes(mainKey, 24);
+            }
+            else
+            {
+                newKey = supplementKeyWithZeroes(mainKey, 16);
+            }
+            return newKey;
+        }
+
+        private byte[] supplementKeyWithZeroes(byte[] mainKey, int newKeySize)
+        {
+            byte[] newKey = new byte[newKeySize];
+            for (int i = 0; i < newKeySize; i++)
+            {
+                if (i >= mainKey.Length)
+                {
+                    newKey[i] = 0;
+                }
+                else
+                {
+                    newKey[i] = mainKey[i];
+                }
+            }
+            return newKey;
+        }
+
         private void inputWhitenning(List<byte[]> textToCrypt, CryptOperation cryptStatus) 
         {
             if (cryptStatus == CryptOperation.ENCRYPT)
