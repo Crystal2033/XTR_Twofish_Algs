@@ -65,7 +65,7 @@ namespace XTR_TwofishAlgs.KeySchedule
                     packOfMiniM[j] = mainKey[8 * i + j];
                 }
                 byte[] miniSVector = MatrixOperationsGF256.MultMatrixesTwoFish(TwoFish.TwoFishMatrixes.RS, packOfMiniM, IrreduciblePolynoms.X8X6X3X2_1);
-                totalSBlock.Insert(0, miniSVector);
+                totalSBlock.Insert(0, CryptSimpleFunctions.RevertBytes(miniSVector));
             }
             return (totalSBlock, (Mo, Me));
         } 
@@ -76,8 +76,9 @@ namespace XTR_TwofishAlgs.KeySchedule
             List<byte[]> Mi = new List<byte[]>();
             for (int i = 0; i < 2 * k; i++)
             {
-                Mi.Add(CryptSimpleFunctions.ConcatBitParts(preparedKey[4 * i], preparedKey[4 * i + 1],
-                    preparedKey[4 * i + 2], preparedKey[4 * i + 3]));
+
+                Mi.Add(CryptSimpleFunctions.ConcatBitParts(preparedKey[4 * i + 3], preparedKey[4 * i + 2],
+                    preparedKey[4 * i + 1], preparedKey[4 * i]));
             }
             return Mi;
         }

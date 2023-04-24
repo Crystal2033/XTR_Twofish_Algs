@@ -25,7 +25,7 @@ namespace XTR_TWOFISH.FeistelImplementation
                 MainKey;
             
             init {
-                _mainKey = prepareMainKey(value);
+                _mainKey = PrepareMainKey(value);
                 _raundKeys = KeyExpander.GenerateRoundKeys(_mainKey, out sBoxes);
             }
         }
@@ -39,13 +39,13 @@ namespace XTR_TWOFISH.FeistelImplementation
 
         public byte[] Execute(in byte[] partOfText, CryptOperation cryptStatus)
         {
-            List<byte[]> slicedBlocks = CryptSimpleFunctions.SliceArrayOnArrays(partOfText, 128, 4); //4 bytes in each block
-            for(int i = 0; i < slicedBlocks.Count; i++)
+            List<byte[]> slicedBlocks = new();
+            for (int i = 0; i < 4; i++)
             {
-                slicedBlocks[i] = CryptSimpleFunctions.RevertBytes(slicedBlocks[i]);
+                slicedBlocks.Add(new byte[4] { partOfText[3*i + i % 4 + 3], partOfText[3 * i + (i % 4) + 2], partOfText[3 * i +(i % 4) + 1], partOfText[3 * i + (i % 4)] });
             }
 
-            inputWhitenning(slicedBlocks, cryptStatus);
+            InputWhitenning(slicedBlocks, cryptStatus);
 
             for (int i = 0; i < _valueOfRaunds; i++)
             {
@@ -76,9 +76,10 @@ namespace XTR_TWOFISH.FeistelImplementation
                 
             }
 
-            outputWhitenning(slicedBlocks, cryptStatus);
+            OutputWhitenning(slicedBlocks, cryptStatus);
             transformOutputCryptText(slicedBlocks);
-            return CryptSimpleFunctions.ConcatBitParts(slicedBlocks, 32);
+
+            return CryptSimpleFunctions.ConcatPureBytes(slicedBlocks);
         }
 
         private void transformOutputCryptText(List<byte[]> cryptText)
@@ -89,7 +90,7 @@ namespace XTR_TWOFISH.FeistelImplementation
             }
         }
 
-        private byte[] prepareMainKey(byte[] mainKey)
+        private byte[] PrepareMainKey(byte[] mainKey)
         {
             byte[] newKey;
             if (mainKey.Length == 16 || mainKey.Length == 24 || mainKey.Length == 32)
@@ -102,22 +103,22 @@ namespace XTR_TWOFISH.FeistelImplementation
             }
             else if(mainKey.Length > 24)
             {
-                newKey = supplementKeyWithZeroes(mainKey, 32);
+                newKey = SupplementKeyWithZeroes(mainKey, 32);
                 
             }
             else if(mainKey.Length > 16)
             {
-                newKey = supplementKeyWithZeroes(mainKey, 24);
+                newKey = SupplementKeyWithZeroes(mainKey, 24);
             }
             else
             {
-                newKey = supplementKeyWithZeroes(mainKey, 16);
+                newKey = SupplementKeyWithZeroes(mainKey, 16);
             }
             CryptSimpleFunctions.ClearBytes(mainKey, 0);
             return newKey;
         }
 
-        private byte[] supplementKeyWithZeroes(byte[] mainKey, int newKeySize)
+        private byte[] SupplementKeyWithZeroes(byte[] mainKey, int newKeySize)
         {
             byte[] newKey = new byte[newKeySize];
             for (int i = 0; i < newKeySize; i++)
@@ -134,7 +135,7 @@ namespace XTR_TWOFISH.FeistelImplementation
             return newKey;
         }
 
-        private void inputWhitenning(List<byte[]> textToCrypt, CryptOperation cryptStatus) 
+        private void InputWhitenning(List<byte[]> textToCrypt, CryptOperation cryptStatus) 
         {
             if (cryptStatus == CryptOperation.ENCRYPT)
             {
@@ -152,7 +153,7 @@ namespace XTR_TWOFISH.FeistelImplementation
             }
         }
 
-        private void outputWhitenning(List<byte[]> textToCrypt, CryptOperation cryptStatus)
+        private void OutputWhitenning(List<byte[]> textToCrypt, CryptOperation cryptStatus)
         {
             byte[] savedBytes0 = (byte[])textToCrypt[0].Clone();
             byte[] savedBytes1 = (byte[])textToCrypt[1].Clone();

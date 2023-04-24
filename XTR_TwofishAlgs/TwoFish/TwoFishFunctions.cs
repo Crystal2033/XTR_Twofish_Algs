@@ -29,7 +29,8 @@ namespace XTR_TwofishAlgs.TwoFish
                     q0Function(connectBytes[2]),
                     q1Function(connectBytes[3])
                 };
-                connectBytes = CryptSimpleFunctions.XorByteArrays(zeroBlockRes, CryptSimpleFunctions.RevertBytes(sBox[3]));
+               
+                connectBytes = CryptSimpleFunctions.XorByteArrays(zeroBlockRes, sBox[3]);
             }
             if (k == 4 || k == 3)
             {
@@ -40,7 +41,7 @@ namespace XTR_TwofishAlgs.TwoFish
                     q1Function(connectBytes[2]),
                     q1Function(connectBytes[3])
                 };
-                connectBytes = CryptSimpleFunctions.XorByteArrays(firstBlockRes, CryptSimpleFunctions.RevertBytes(sBox[2]));
+                connectBytes = CryptSimpleFunctions.XorByteArrays(firstBlockRes, sBox[2]);
             }
             //k >=2
 
@@ -52,7 +53,7 @@ namespace XTR_TwofishAlgs.TwoFish
                 q0Function(connectBytes[3])
             };
 
-            connectBytes = CryptSimpleFunctions.XorByteArrays(secondBlockRes, CryptSimpleFunctions.RevertBytes(sBox[1]));
+            connectBytes = CryptSimpleFunctions.XorByteArrays(secondBlockRes, sBox[1]);
 
             byte[] thirdBlockRes = new byte[4]
             {
@@ -61,7 +62,7 @@ namespace XTR_TwofishAlgs.TwoFish
                 q0Function(connectBytes[2]),
                 q0Function(connectBytes[3])
             };
-            connectBytes = CryptSimpleFunctions.XorByteArrays(thirdBlockRes, CryptSimpleFunctions.RevertBytes(sBox[0]));
+            connectBytes = CryptSimpleFunctions.XorByteArrays(thirdBlockRes, sBox[0]);
 
             byte[] fourthBlockRes = new byte[4]
             {

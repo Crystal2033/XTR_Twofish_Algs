@@ -204,13 +204,13 @@ namespace XTR_TwofishAlgs.HelpFunctions
         {
             shiftValue = shiftValue % (rightEdge - leftEdge);
             byte resultByte = 0;
-            resultByte = ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge);
+            resultByte = ShakeAndDropNotNeededBitsInByte(myByte, leftEdge, rightEdge);
             resultByte = (byte)((resultByte << (rightEdge - leftEdge - shiftValue)) | (resultByte >> shiftValue)); //shifting in small range of bits in byte
-            resultByte = ShakeAndDropNotNeededNitsInByte(resultByte, leftEdge, rightEdge);
-            return (byte)(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+            resultByte = ShakeAndDropNotNeededBitsInByte(resultByte, leftEdge, rightEdge);
+            return (byte)(resultByte | ShakeAndDropNotNeededBitsInByte(myByte, leftEdge, rightEdge, true));
         }
 
-        private static byte ShakeAndDropNotNeededNitsInByte(byte myByte, int leftEdge, int rightEdge, bool removeInsideRange=false)///deleting not needed bits
+        private static byte ShakeAndDropNotNeededBitsInByte(byte myByte, int leftEdge, int rightEdge, bool removeInsideRange=false)///deleting not needed bits
         {
             byte tmp = 0;
             if (removeInsideRange)
@@ -228,10 +228,10 @@ namespace XTR_TwofishAlgs.HelpFunctions
         {
             shiftValue = shiftValue % (rightEdge - leftEdge);
             byte resultByte = 0;
-            resultByte = ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge);
+            resultByte = ShakeAndDropNotNeededBitsInByte(myByte, leftEdge, rightEdge);
             resultByte = (byte)((resultByte >> (rightEdge - leftEdge - shiftValue)) | (resultByte << shiftValue)); //shifting in small range of bits in byte
-            resultByte = ShakeAndDropNotNeededNitsInByte(resultByte, leftEdge, rightEdge);
-            return (byte)(resultByte | ShakeAndDropNotNeededNitsInByte(myByte, leftEdge, rightEdge, true));
+            resultByte = ShakeAndDropNotNeededBitsInByte(resultByte, leftEdge, rightEdge);
+            return (byte)(resultByte | ShakeAndDropNotNeededBitsInByte(myByte, leftEdge, rightEdge, true));
         }
 
         public static byte[] RevertBytes(byte[] bytes)
@@ -262,6 +262,23 @@ namespace XTR_TwofishAlgs.HelpFunctions
             SetRangeOfBits(leftPart, 0, 0, leftSize, concatArr, 0, 0);
             SetRangeOfBits(rightPart, 0, 0, rightSize, concatArr, leftSize / CryptConstants.BITS_IN_BYTE, (byte)(leftSize % CryptConstants.BITS_IN_BYTE));
             return concatArr;
+        }
+
+        public static byte[] ConcatPureBytes(List<byte[]> bytesToConcat)
+        {
+            if(bytesToConcat.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                byte[] result = new byte[bytesToConcat.Count * bytesToConcat[0].Length];
+                for (int i = 0; i < result.Length; i++)
+                {
+                    result[i] = bytesToConcat[i / 4][i % 4];
+                }
+                return result;
+            }
         }
 
         public static byte[] ConcatBitParts(List<byte[]> parts, int bitSize)
