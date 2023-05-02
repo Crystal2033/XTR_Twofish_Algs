@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="CryptInterfaces\" />
+    <Folder Include="SymCryptInterfaces\" />
     <Folder Include="Data\Music\" />
     <Folder Include="Data\Photo\" />
     <Folder Include="Data\Video\" />

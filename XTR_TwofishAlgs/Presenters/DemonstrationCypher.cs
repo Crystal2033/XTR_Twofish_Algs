@@ -59,13 +59,12 @@ namespace XTR_TWOFISH.Presenters
         {
 
             AdvancedCypherSym advancedCypherSym = new(mainKey, mode, CypherEnums.SymmetricAlgorithm.TWOFISH, initVector);
+
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            // the code that you want to measure comes here
-            
             await advancedCypherSym.EncryptAsync(inFile, encryptFile);
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine(elapsedMs.ToString(), " ms");
+            Console.WriteLine(elapsedMs.ToString() + " ms");
 
             Console.WriteLine($"EncryptAsync {mode} is done");
 
