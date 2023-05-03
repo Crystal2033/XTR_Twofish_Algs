@@ -13,6 +13,7 @@ using XTR_TwofishAlgs.KeySchedule;
 using XTR_TwofishAlgs.MathBase;
 using XTR_TwofishAlgs.MathBase.GaloisField;
 using XTR_TwofishAlgs.TwoFish;
+using XTR_TwofishAlgs.XTR;
 using static XTR_TwofishAlgs.HelpFunctions.CryptConstants;
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 internal class Program
@@ -105,22 +106,45 @@ internal class Program
 
     private static void Main(string[] args)
     {
-        int a = 240;
-        int b = 46;
         //(int nod, (int x, int y)) = Euclid.ExtendedGcd(a, b);
         //_log.Info($"{a} * {x} + {b} * {y} = {nod}");
+        //GFP2 galoisFieldP2 = new GFP2(11);
+        //var tmp = galoisFieldP2.Values[100];
+        //GFP2.Polynom1DegreeCoeffs valInGFP2 = tmp;
+
+        //_log.Info($"({valInGFP2.First},{valInGFP2.Second})");
+        //for (int i = 0; i < galoisFieldP2.Primary - 1; i++)
+        //{
+        //    valInGFP2 = galoisFieldP2.Mult(valInGFP2, tmp);
+        //}
+        //_log.Info($"POW=({valInGFP2.First},{valInGFP2.Second})");
+
+        //var powP = galoisFieldP2.PowP(tmp);
+        //_log.Info($"POW=({powP.First},{powP.Second})");
+
         GFP2 galoisFieldP2 = new GFP2(11);
-        var tmp = galoisFieldP2.Values[100];
-        GFP2.Polynom1DegreeCoeffs valInGFP2 = tmp;
+        XTRFunctions xtrFunctions = new(11, 37);
+        GFP2.Polynom1DegreeCoeffs trace = xtrFunctions.GenerateTrace().Second;
+        
 
-        _log.Info($"({valInGFP2.First},{valInGFP2.Second})");
-        for (int i = 0; i < galoisFieldP2.Primary - 1; i++)
-        {
-            valInGFP2 = galoisFieldP2.Mult(valInGFP2, tmp);
-        }
-        _log.Info($"POW=({valInGFP2.First},{valInGFP2.Second})");
+        int a = 2324;
+        int b = 5512;
 
-        var powP = galoisFieldP2.PowP(tmp);
-        _log.Info($"POW=({powP.First},{powP.Second})");
+        GFP2.Polynom1DegreeCoeffs alicesTracePowA = xtrFunctions.SFunction(a, trace).Second;
+        GFP2.Polynom1DegreeCoeffs bobTracePowB = xtrFunctions.SFunction(b, trace).Second;
+        _log.Info($"({alicesTracePowA.First}, {alicesTracePowA.Second})");
+        _log.Info($"({bobTracePowB.First}, {bobTracePowB.Second})");
+
+        GFP2.Polynom1DegreeCoeffs keyBobs = xtrFunctions.SFunction(b, alicesTracePowA).Second;
+        GFP2.Polynom1DegreeCoeffs keyAlices = xtrFunctions.SFunction(a, bobTracePowB).Second;
+        _log.Info($"({keyBobs.First}, {keyBobs.Second})");
+        _log.Info($"({keyAlices.First}, {keyAlices.Second})");
+
+        //for(int i = 0; i < 1000; i++)
+        //{
+        //    _log.Info(i);
+        //    var result = xtrFunctions.SFunction(i, galoisFieldP2.Values[50]);
+        //    _log.Info($"({result.Second.First}, {result.Second.Second})");
+        //}
     }
 }
