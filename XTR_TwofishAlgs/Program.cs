@@ -109,17 +109,18 @@ internal class Program
         int b = 46;
         //(int nod, (int x, int y)) = Euclid.ExtendedGcd(a, b);
         //_log.Info($"{a} * {x} + {b} * {y} = {nod}");
-        GFP2 galoisFieldP2 = new GFP2(17);
-        var tmp = galoisFieldP2.Values[10]; ;
+        GFP2 galoisFieldP2 = new GFP2(11);
+        var tmp = galoisFieldP2.Values[100];
         GFP2.Polynom1DegreeCoeffs valInGFP2 = tmp;
 
         _log.Info($"({valInGFP2.First},{valInGFP2.Second})");
-        for (int i = 0; i < galoisFieldP2.Primary; i++)
+        for (int i = 0; i < galoisFieldP2.Primary - 1; i++)
         {
-            valInGFP2 = GFP2.Mult(valInGFP2, tmp, galoisFieldP2.Primary);
+            valInGFP2 = galoisFieldP2.Mult(valInGFP2, tmp);
         }
+        _log.Info($"POW=({valInGFP2.First},{valInGFP2.Second})");
 
-        var powP = GFP2.PowP(tmp);
+        var powP = galoisFieldP2.PowP(tmp);
         _log.Info($"POW=({powP.First},{powP.Second})");
     }
 }

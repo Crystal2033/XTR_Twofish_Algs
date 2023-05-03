@@ -102,23 +102,14 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
             return new GF256(val);
         }
 
-        public static int getHighest2DegreeValue(uint value)
-        {
-            int degree = 0;
-            while(value != 1)
-            {
-                value >>= 1;
-                degree++;
-            }
-            return degree;
-        }
+        
         public static uint divideByColumn(uint dividing, uint divider)
         {
-            int nextDivider2DegreeGreater = getHighest2DegreeValue(divider);
+            int nextDivider2DegreeGreater = StandartMathTricks.getHighest2DegreeValue(divider);
             int maxFieldValue = 1 << nextDivider2DegreeGreater;
             while (dividing >= maxFieldValue)
             {
-                dividing = (divider << ((getHighest2DegreeValue(dividing) - nextDivider2DegreeGreater))) ^ dividing;
+                dividing = (divider << ((StandartMathTricks.getHighest2DegreeValue(dividing) - nextDivider2DegreeGreater))) ^ dividing;
             }
             return dividing;
         }
