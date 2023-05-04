@@ -121,24 +121,44 @@ internal class Program
 
         //var powP = galoisFieldP2.PowP(tmp);
         //_log.Info($"POW=({powP.First},{powP.Second})");
+        for(long primary = 100; primary < 30000000; primary++)
+        {
+            GFP2 galoisFieldP2 = new GFP2(primary);
+            XTRFunctions xtrFunctions = new(primary, 47);
+            GFP2.Polynom1DegreeCoeffs trace = xtrFunctions.GenerateTrace().Second;
 
-        GFP2 galoisFieldP2 = new GFP2(11);
-        XTRFunctions xtrFunctions = new(11, 37);
-        GFP2.Polynom1DegreeCoeffs trace = xtrFunctions.GenerateTrace().Second;
+            for (int a = 1; a < 10; a++)
+            {
+                for (int b = 1; b < 10; b++)
+                {
+                    GFP2.Polynom1DegreeCoeffs alicesTracePowA = xtrFunctions.SFunction(a, trace).Second;
+                    GFP2.Polynom1DegreeCoeffs bobTracePowB = xtrFunctions.SFunction(b, trace).Second;
+                    //_log.Info($"({alicesTracePowA.First}, {alicesTracePowA.Second})");
+                    //_log.Info($"({bobTracePowB.First}, {bobTracePowB.Second})");
+
+                    GFP2.Polynom1DegreeCoeffs keyBobs = xtrFunctions.SFunction(b, alicesTracePowA).Second;
+                    GFP2.Polynom1DegreeCoeffs keyAlices = xtrFunctions.SFunction(a, bobTracePowB).Second;
+                    //_log.Info($"({keyBobs.First}, {keyBobs.Second})");
+                    //_log.Info($"({keyAlices.First}, {keyAlices.Second})");
+                    if (keyBobs.First != keyAlices.First || keyBobs.Second != keyAlices.Second)
+                    {
+                        //_log.Info($"({keyBobs.First}, {keyBobs.Second})");
+                        //_log.Info($"({keyAlices.First}, {keyAlices.Second})");
+                        //_log.Info($"Fuck");
+                        _log.Info($"{primary}:{a}:{b}");
+                    }
+                    //else
+                    //{
+                    //    _log.Info($"OK");
+                    //}
+                }
+            }
+        }
+
+        
         
 
-        int a = 2324;
-        int b = 5512;
-
-        GFP2.Polynom1DegreeCoeffs alicesTracePowA = xtrFunctions.SFunction(a, trace).Second;
-        GFP2.Polynom1DegreeCoeffs bobTracePowB = xtrFunctions.SFunction(b, trace).Second;
-        _log.Info($"({alicesTracePowA.First}, {alicesTracePowA.Second})");
-        _log.Info($"({bobTracePowB.First}, {bobTracePowB.Second})");
-
-        GFP2.Polynom1DegreeCoeffs keyBobs = xtrFunctions.SFunction(b, alicesTracePowA).Second;
-        GFP2.Polynom1DegreeCoeffs keyAlices = xtrFunctions.SFunction(a, bobTracePowB).Second;
-        _log.Info($"({keyBobs.First}, {keyBobs.Second})");
-        _log.Info($"({keyAlices.First}, {keyAlices.Second})");
+        
 
         //for(int i = 0; i < 1000; i++)
         //{

@@ -47,8 +47,8 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         {
             _primaryNumber = p;
             _orderValue = _primaryNumber * _primaryNumber;
-            _values = new Polynom1DegreeCoeffs[_orderValue];
-            CreateGaloisFieldP2();
+            //_values = new Polynom1DegreeCoeffs[_orderValue];
+            //CreateGaloisFieldP2();
         }
 
         public Polynom1DegreeCoeffs GenerateRandomValue()
@@ -92,7 +92,7 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
 
         public Polynom1DegreeCoeffs Pow2(Polynom1DegreeCoeffs x)
         {
-            long newFirstValue = ModGFP(x.Second * (x.Second - 2*x.First));
+            long newFirstValue = ModGFP(x.Second * (x.Second - 2 * x.First));
             long newSecondValue = ModGFP(x.First * (x.First - 2*x.Second));
             //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
