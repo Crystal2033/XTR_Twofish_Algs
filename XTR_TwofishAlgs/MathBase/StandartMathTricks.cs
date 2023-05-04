@@ -1,7 +1,9 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +12,7 @@ namespace XTR_TwofishAlgs.MathBase
 {
     public static class StandartMathTricks
     {
+        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public static int GetHighest2DegreeValue(uint value)
         {
             int degree = 0;
@@ -33,7 +36,7 @@ namespace XTR_TwofishAlgs.MathBase
         }
 
         // производится k раундов проверки числа n на простоту
-        public static bool FermaTest(BigInteger n, int k)
+        public static bool FermaTestIsPrime(BigInteger n, int k)
         {
             // если n == 2 или n == 3 - эти числа простые, возвращаем true
             if (n == 2 || n == 3)
@@ -61,7 +64,47 @@ namespace XTR_TwofishAlgs.MathBase
             }
             return true;
         }
-        public static bool MillerRabinTest(BigInteger n, int k)
+
+        public static (BigInteger p, BigInteger q) GeneratePQ(int minSizePBits, int minSizeQBits)
+        {
+            if(minSizePBits < minSizeQBits)
+            {
+                return GeneratePQ(minSizeQBits, minSizePBits);
+            }
+            BigInteger minValueForQ = BigInteger.Pow(2, minSizeQBits / 2 - 1); //Because in q gen r*r. Order*2
+            _log.Info($"minValueForQ = {minValueForQ.GetBitLength()}");
+
+            BigInteger r;
+            BigInteger q;
+            do
+            {
+                using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+                {
+                    r = RandomInRange(rng, minValueForQ * 2 - 1, minValueForQ * 4 - 1);
+                    q = r * r - r + 1;
+                }
+                    
+            } while (!MillerRabinTestIsPrime(q, 10));
+
+            BigInteger k;
+            BigInteger bitsForK = BigInteger.Pow(2, minSizePBits - minSizeQBits);
+            BigInteger p;
+            do
+            {
+                using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+                {
+                    k = RandomInRange(rng, bitsForK, bitsForK * 2 - 1);
+                    p = r + k * q;
+                    //_log.Info($"P = {p.GetBitLength()}");
+                }
+            } while ((!MillerRabinTestIsPrime(p, 10)) || (p % 3 != 2));
+
+            _log.Info($"P = {p.GetBitLength()}");
+            _log.Info($"Q = {q.GetBitLength()}");
+
+            return (p, q);
+        }
+        public static bool MillerRabinTestIsPrime(BigInteger n, int k)
         {
             // если n == 2 или n == 3 - эти числа простые, возвращаем true
             if (n == 2 || n == 3)
