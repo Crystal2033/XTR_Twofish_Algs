@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,17 +14,17 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
     {
         public class Polynom1DegreeCoeffs
         {
-            public Polynom1DegreeCoeffs(long x1, long x2)
+            public Polynom1DegreeCoeffs(BigInteger x1, BigInteger x2)
             {
                 First = x1;
                 Second = x2;
             }
 
-            public long First { get; set; }
-            public long Second { get; set; }
+            public BigInteger First { get; set; }
+            public BigInteger Second { get; set; }
         }
 
-        private long ModGFP(long value)
+        private BigInteger ModGFP(BigInteger value)
         {
             if(value < 0)
             {
@@ -38,12 +39,12 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private Polynom1DegreeCoeffs[] _values;
         public Polynom1DegreeCoeffs[] Values { get => _values; set => _values = value; }
-        private long _primaryNumber;
-        public long Primary { get => _primaryNumber; set => _primaryNumber = value; }
+        private BigInteger _primaryNumber;
+        public BigInteger Primary { get => _primaryNumber; set => _primaryNumber = value; }
 
-        private long _orderValue;
+        private BigInteger _orderValue;
 
-        public GFP2(long p)
+        public GFP2(BigInteger p)
         {
             _primaryNumber = p;
             _orderValue = _primaryNumber * _primaryNumber;
@@ -53,47 +54,51 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
 
         public Polynom1DegreeCoeffs GenerateRandomValue()
         {
-            Random r = new();
-            long first = r.NextInt64(_primaryNumber);
-            long second = r.NextInt64(_primaryNumber);
-            return new Polynom1DegreeCoeffs(first, second);
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                BigInteger first = StandartMathTricks.RandomInRange(rng, 2, _primaryNumber);
+                BigInteger second = StandartMathTricks.RandomInRange(rng, 2, _primaryNumber);
+                return new Polynom1DegreeCoeffs(first, second);
+            }
         }
+
+
         public Polynom1DegreeCoeffs Mult(Polynom1DegreeCoeffs x, Polynom1DegreeCoeffs y)
         {
-            long newFirstValue = ModGFP(x.Second * y.Second - x.First * y.Second - x.Second * y.First);
-            long newSecondValue = ModGFP(x.First * y.First - x.First * y.Second - x.Second * y.First);
+            BigInteger newFirstValue = ModGFP(x.Second * y.Second - x.First * y.Second - x.Second * y.First);
+            BigInteger newSecondValue = ModGFP(x.First * y.First - x.First * y.Second - x.Second * y.First);
             //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
 
-        public Polynom1DegreeCoeffs Mult(long coeff, Polynom1DegreeCoeffs x)
+        public Polynom1DegreeCoeffs Mult(BigInteger coeff, Polynom1DegreeCoeffs x)
         {
-            long newFirstValue = ModGFP(coeff*x.First);
-            long newSecondValue = ModGFP(coeff * x.Second);
+            BigInteger newFirstValue = ModGFP(coeff*x.First);
+            BigInteger newSecondValue = ModGFP(coeff * x.Second);
             //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
 
         public Polynom1DegreeCoeffs Add(Polynom1DegreeCoeffs x, Polynom1DegreeCoeffs y)
         {
-            long newFirstValue = ModGFP(x.First + y.First);
-            long newSecondValue = ModGFP(x.Second + y.Second);
+            BigInteger newFirstValue = ModGFP(x.First + y.First);
+            BigInteger newSecondValue = ModGFP(x.Second + y.Second);
             //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
 
         public Polynom1DegreeCoeffs Substract(Polynom1DegreeCoeffs x, Polynom1DegreeCoeffs y)
         {
-            long newFirstValue = ModGFP(x.First - y.First);
-            long newSecondValue = ModGFP(x.Second - y.Second);
+            BigInteger newFirstValue = ModGFP(x.First - y.First);
+            BigInteger newSecondValue = ModGFP(x.Second - y.Second);
             //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
 
         public Polynom1DegreeCoeffs Pow2(Polynom1DegreeCoeffs x)
         {
-            long newFirstValue = ModGFP(x.Second * (x.Second - 2 * x.First));
-            long newSecondValue = ModGFP(x.First * (x.First - 2*x.Second));
+            BigInteger newFirstValue = ModGFP(x.Second * (x.Second - 2 * x.First));
+            BigInteger newSecondValue = ModGFP(x.First * (x.First - 2*x.Second));
             //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
@@ -110,24 +115,10 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
 
         public Polynom1DegreeCoeffs XZMinusYZPowP(Polynom1DegreeCoeffs x, Polynom1DegreeCoeffs y, Polynom1DegreeCoeffs z)
         {
-            long newFirstValue = ModGFP(z.First*(y.First - x.Second - y.Second) + z.Second*(x.Second - x.First + y.Second));
-            long newSecondValue = ModGFP(z.First*(x.First- x.Second + y.First) + z.Second*(y.Second - x.First - y.First));
+            BigInteger newFirstValue = ModGFP(z.First*(y.First - x.Second - y.Second) + z.Second*(x.Second - x.First + y.Second));
+            BigInteger newSecondValue = ModGFP(z.First*(x.First- x.Second + y.First) + z.Second*(y.Second - x.First - y.First));
             //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
-        }
-
-        private void CreateGaloisFieldP2()
-        {
-            for(int i = 0; i < _primaryNumber; i++)
-            {
-                for (int j = 0; j < _primaryNumber; j++)
-                {
-                    _values[i * _primaryNumber + j] = new Polynom1DegreeCoeffs(i, j);
-                    //_log.Info($"GF({_primaryNumber}^2)[{i * _primaryNumber + j}] = ({_values[i * _primaryNumber + j].First}, {_values[i * _primaryNumber + j].Second})");
-                }
-            }
-        }
-
-        
+        }        
     }
 }

@@ -42,11 +42,11 @@ namespace XTR_TwofishAlgs.XTR
     {
         private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private long _p;
-        private long _q;
+        private BigInteger _p;
+        private BigInteger _q;
         private GFP2 galoisFieldP2;
 
-        public XTRFunctions(long p, long q)
+        public XTRFunctions(BigInteger p, BigInteger q)
         {
             _q = q;
             _p = p;
@@ -127,7 +127,7 @@ namespace XTR_TwofishAlgs.XTR
         {
             while (true)
             {
-                long n = _p + 1;
+                BigInteger n = _p + 1;
                 GFP2.Polynom1DegreeCoeffs c;
                 TripleValsInGFP2 cpPlus1;
                 do
@@ -150,7 +150,7 @@ namespace XTR_TwofishAlgs.XTR
             }
             
         }
-        public TripleValsInGFP2 SFunction(long n, GFP2.Polynom1DegreeCoeffs c)
+        public TripleValsInGFP2 SFunction(BigInteger n, GFP2.Polynom1DegreeCoeffs c)
         {
             if (n < 0)
             {
@@ -177,15 +177,15 @@ namespace XTR_TwofishAlgs.XTR
             }
             else
             {
-                long m_ = n;
+                BigInteger m_ = n;
                 if (m_ % 2 == 0)
                 {
                     m_--;
                 }
 
-                long m = (m_ - 1) / 2;
-                int highest2Degree = StandartMathTricks.getHighest2DegreeValue((uint)m);
-                long k = 1;
+                BigInteger m = (m_ - 1) / 2;
+                int highest2Degree = StandartMathTricks.GetHighest2DegreeValue(m);
+                BigInteger k = 1;
                 SkList.Add(new TripleValsInGFP2(SkList[2].Second, SkList[2].Third, GetCnPlus2(2, SkList)));
 
                 for (int i = highest2Degree - 1; i >= 0; i--)

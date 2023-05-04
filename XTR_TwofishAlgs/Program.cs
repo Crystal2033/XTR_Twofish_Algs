@@ -1,7 +1,9 @@
 ﻿using log4net;
+using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
 using System.Reflection;
+using System.Security.Cryptography;
 using XTR_TWOFISH.CryptInterfaces;
 using XTR_TWOFISH.CypherModes;
 using XTR_TWOFISH.FeistelImplementation;
@@ -121,44 +123,51 @@ internal class Program
 
         //var powP = galoisFieldP2.PowP(tmp);
         //_log.Info($"POW=({powP.First},{powP.Second})");
-        for(long primary = 100; primary < 30000000; primary++)
+
+        BigInteger a1 = BigInteger.Parse("1298074214633706835075030044377081");
+        BigInteger a2 = BigInteger.Parse("123123213124141451515151");
+
+        bool isPrime = StandartMathTricks.FermaTest(a1, 10);
+        if (isPrime)
         {
-            GFP2 galoisFieldP2 = new GFP2(primary);
-            XTRFunctions xtrFunctions = new(primary, 47);
-            GFP2.Polynom1DegreeCoeffs trace = xtrFunctions.GenerateTrace().Second;
-
-            for (int a = 1; a < 10; a++)
-            {
-                for (int b = 1; b < 10; b++)
-                {
-                    GFP2.Polynom1DegreeCoeffs alicesTracePowA = xtrFunctions.SFunction(a, trace).Second;
-                    GFP2.Polynom1DegreeCoeffs bobTracePowB = xtrFunctions.SFunction(b, trace).Second;
-                    //_log.Info($"({alicesTracePowA.First}, {alicesTracePowA.Second})");
-                    //_log.Info($"({bobTracePowB.First}, {bobTracePowB.Second})");
-
-                    GFP2.Polynom1DegreeCoeffs keyBobs = xtrFunctions.SFunction(b, alicesTracePowA).Second;
-                    GFP2.Polynom1DegreeCoeffs keyAlices = xtrFunctions.SFunction(a, bobTracePowB).Second;
-                    //_log.Info($"({keyBobs.First}, {keyBobs.Second})");
-                    //_log.Info($"({keyAlices.First}, {keyAlices.Second})");
-                    if (keyBobs.First != keyAlices.First || keyBobs.Second != keyAlices.Second)
-                    {
-                        //_log.Info($"({keyBobs.First}, {keyBobs.Second})");
-                        //_log.Info($"({keyAlices.First}, {keyAlices.Second})");
-                        //_log.Info($"Fuck");
-                        _log.Info($"{primary}:{a}:{b}");
-                    }
-                    //else
-                    //{
-                    //    _log.Info($"OK");
-                    //}
-                }
-            }
+            _log.Info($"The {a1} is prime.");
+        }
+        else
+        {
+            _log.Info($"The {a1} is NOT prime.");
         }
 
-        
-        
+        //GFP2 galoisFieldP2 = new GFP2(BigInteger.Parse("92233720368547758071231254152563463634"));
+        //XTRFunctions xtrFunctions = new(galoisFieldP2.Primary, BigInteger.Parse("9223352563463634"));
+        //GFP2.Polynom1DegreeCoeffs trace = xtrFunctions.GenerateTrace().Second;
 
-        
+        //for (int a = 1; a < 2; a++)
+        //{
+        //    for (int b = 1; b < 2; b++)
+        //    {
+        //        GFP2.Polynom1DegreeCoeffs alicesTracePowA = xtrFunctions.SFunction(a, trace).Second;
+        //        GFP2.Polynom1DegreeCoeffs bobTracePowB = xtrFunctions.SFunction(b, trace).Second;
+        //        //_log.Info($"({alicesTracePowA.First}, {alicesTracePowA.Second})");
+        //        //_log.Info($"({bobTracePowB.First}, {bobTracePowB.Second})");
+
+        //        GFP2.Polynom1DegreeCoeffs keyBobs = xtrFunctions.SFunction(b, alicesTracePowA).Second;
+        //        GFP2.Polynom1DegreeCoeffs keyAlices = xtrFunctions.SFunction(a, bobTracePowB).Second;
+        //        _log.Info($"({keyBobs.First}, {keyBobs.Second})");
+        //        _log.Info($"({keyAlices.First}, {keyAlices.Second})");
+        //        if (keyBobs.First != keyAlices.First || keyBobs.Second != keyAlices.Second)
+        //        {
+        //            //_log.Info($"({keyBobs.First}, {keyBobs.Second})");
+        //            //_log.Info($"({keyAlices.First}, {keyAlices.Second})");
+        //            _log.Info($"Fuck");
+        //        }
+        //    }
+        //}
+
+
+
+
+
+
 
         //for(int i = 0; i < 1000; i++)
         //{

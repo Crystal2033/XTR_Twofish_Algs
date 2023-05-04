@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,26 @@ namespace XTR_TwofishAlgs.MathBase
                 }
                 int quotient = oldR / r;
  
+                (oldR, r) = (r, oldR - quotient * r);
+                (oldS, s) = (s, oldS - quotient * s);
+                (oldT, t) = (t, oldT - quotient * t);
+            }
+            return (oldR, (oldS, oldT));
+        }
+
+        public static (BigInteger nod, (BigInteger x, BigInteger y) coeffs) ExtendedGcd(BigInteger a, BigInteger b)
+        {
+            (BigInteger oldR, BigInteger r) = (a, b); //r - это остаток от деления 
+            (BigInteger oldS, BigInteger s) = (1, 0);
+            (BigInteger oldT, BigInteger t) = (0, 1);
+            while (r != 0)
+            {
+                if (oldR < r)
+                {
+                    (oldR, r) = (r, oldR);
+                }
+                BigInteger quotient = oldR / r;
+
                 (oldR, r) = (r, oldR - quotient * r);
                 (oldS, s) = (s, oldS - quotient * s);
                 (oldT, t) = (t, oldT - quotient * t);
