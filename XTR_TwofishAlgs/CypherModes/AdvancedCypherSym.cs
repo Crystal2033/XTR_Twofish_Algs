@@ -20,18 +20,19 @@ namespace XTR_TWOFISH.CypherModes
         private byte[] _cypherKey;
         private CypherMode _mode;
         private byte[] _initVector;
-        private object[] _modeParams;
+        private object[] objs;
 
         private CryptModeImpl _encriptionModeImpl;
         private ISymmetricEncryption _cryptAlgorithm;
         private int _textBlockSizeInBytes;
 
-        public AdvancedCypherSym(byte[] cypherKey, CypherMode mode, SymmetricAlgorithm symmetricAlgorithm, byte[] initVector = null, params object[] modeParams)
+        public AdvancedCypherSym(byte[] cypherKey, CypherMode mode, SymmetricAlgorithm symmetricAlgorithm, byte[] initVector = null, params object[] obj)
         {
             _cypherKey = cypherKey;
             _mode = mode;
             _initVector = initVector;
-            _modeParams = modeParams;
+            objs = obj;
+            
 
             _cryptAlgorithm = GetSymmetricAlgorithm(symmetricAlgorithm);
             _encriptionModeImpl = GetModeImplementation();
@@ -77,14 +78,15 @@ namespace XTR_TWOFISH.CypherModes
             }
         }
 
-        public async Task EncryptAsync(string fileToEncrypt, string encryptResultFile)
+        public Task EncryptAsync(string fileToEncrypt, string encryptResultFile, CancellationToken token = default)
         {
-            await _encriptionModeImpl?.EncryptWithMode(fileToEncrypt, encryptResultFile);
+
+            return _encriptionModeImpl.EncryptWithModeAsync(fileToEncrypt, encryptResultFile, token);
         }
 
-        public async Task DecryptAsync(string fileToDecrypt, string decryptResultFile)
+        public Task DecryptAsync(string fileToDecrypt, string decryptResultFile, CancellationToken token = default)
         {
-            await _encriptionModeImpl?.DecryptWithMode(fileToDecrypt, decryptResultFile);
+            return _encriptionModeImpl.DecryptWithModeAsync(fileToDecrypt, decryptResultFile, token);
         }
 
     }

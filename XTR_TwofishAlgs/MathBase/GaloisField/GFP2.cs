@@ -22,6 +22,11 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
 
             public BigInteger First { get; set; }
             public BigInteger Second { get; set; }
+
+            public override string ToString()
+            {
+                return $"{First}:{Second}";
+            }
         }
 
         private BigInteger ModGFP(BigInteger value)

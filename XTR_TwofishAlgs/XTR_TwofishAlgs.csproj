@@ -5,6 +5,16 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>PSKulikov.Cryptography.XTR_TwofishAlgs</PackageId>
+    <Authors>Kulikov Pavel</Authors>
+    <Company>Kulikov Pavel</Company>
+    <Description>Cryptography assymetric XTR and symmetric TwoFish algorythms.
+Symmetric cyphering with modes.</Description>
+    <IncludeSymbols>False</IncludeSymbols>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/Crystal2033/XTR_Twofish_Algs</RepositoryUrl>
+    <PackageTags>Cryptography, XTR, TwoFish, cyphering modes, symmetric cryptography, asymmetric cryptography</PackageTags>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>

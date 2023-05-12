@@ -39,6 +39,7 @@ namespace XTR_TWOFISH.ThreadingWork
             {
                 while (posInTextBlock < _loader.FactTextBlockSize)
                 {
+
                     long newCounter = _threadId + absWrittenBytes * ThreadsInfo.VALUE_OF_THREAD + _delta;
 
                     byte[] newInitVector = CryptSimpleFunctions.ConcatTwoBitParts(BitConverter.GetBytes(newCounter + initVectorAsNumber), 64,

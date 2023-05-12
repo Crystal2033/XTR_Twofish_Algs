@@ -9,6 +9,7 @@ using XTR_TWOFISH.CryptInterfaces;
 using XTR_TWOFISH.CypherEnums;
 using XTR_TWOFISH.HelpFunctionsAndData;
 using XTR_TWOFISH.ThreadingWork;
+using XTR_TwofishAlgs.Exceptions;
 using XTR_TwofishAlgs.HelpFunctions;
 
 namespace XTR_TWOFISH.CypherModes.ModesImplementation
@@ -23,9 +24,16 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             _initVector = initVector;
         }
 
-        public override async Task DecryptWithMode(string fileToDecrypt, string decryptResultFile)
+        public override async Task DecryptWithModeAsync(string fileToDecrypt, string decryptResultFile, CancellationToken token)
         {
             FileDataLoader loader = new(fileToDecrypt, decryptResultFile);
+            if (loader.TextReadSize % _textBlockSizeInBytes != 0)
+            {
+                _log.Error($"Text for decryption in {fileToDecrypt} is not compatible. Size % {_textBlockSizeInBytes} != 0.");
+                loader.CloseStreams();
+                throw new DamagedFileException($"Text for decryption in {fileToDecrypt} is not compatible. Size % {_textBlockSizeInBytes} != 0.");
+            }
+
             int posInTextBlock;
             byte[] prevCypheredPartOfText;
             byte[] cypheredInitVector = _initVector;
@@ -36,6 +44,11 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
                 posInTextBlock = 0;
                 while (posInTextBlock < loader.FactTextBlockSize)
                 {
+                    if (token.IsCancellationRequested)
+                    {
+                        loader.CloseStreams();
+                        return;
+                    }
                     prevCypheredPartOfText = GetCryptValue(cypheredInitVector, loader, posInTextBlock, out cypheredInitVector);
                     realPlainTextPartSize = CryptSimpleFunctions.GetPureTextWithoutPaddingSize(ref prevCypheredPartOfText, loader, posInTextBlock);
                     TextBlockOperations.InsertPartInTextBlock(posInTextBlock, prevCypheredPartOfText, realPlainTextPartSize, loader);
@@ -59,7 +72,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
 
             return CryptSimpleFunctions.XorByteArrays(partOfTextBlock, cryptedInitValue);
         }
-        public override async Task EncryptWithMode(string fileToEncrypt, string encryptResultFile)
+        public override async Task EncryptWithModeAsync(string fileToEncrypt, string encryptResultFile, CancellationToken token)
         {
             FileDataLoader loader = new(fileToEncrypt, encryptResultFile);
             int curPosInTextBlock;
@@ -71,6 +84,11 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
                 curPosInTextBlock = 0;
                 while (curPosInTextBlock < loader.FactTextBlockSize)
                 {
+                    if (token.IsCancellationRequested)
+                    {
+                        loader.CloseStreams();
+                        return;
+                    }
                     cypherText = GetCryptValue(cryptedInitVector, loader, curPosInTextBlock, out cryptedInitVector);
                     TextBlockOperations.InsertPartInTextBlock(curPosInTextBlock, cypherText, cypherText.Length, loader);
                     curPosInTextBlock += cypherText.Length;

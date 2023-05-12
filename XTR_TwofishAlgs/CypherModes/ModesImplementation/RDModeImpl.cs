@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using XTR_TWOFISH.CryptInterfaces;
 using XTR_TWOFISH.CypherEnums;
 using XTR_TWOFISH.ThreadingWork;
+using XTR_TwofishAlgs.Exceptions;
 using XTR_TwofishAlgs.HelpFunctions;
 
 namespace XTR_TWOFISH.CypherModes.ModesImplementation
@@ -32,14 +33,14 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             _initVector = initVector;
             _delta = delta;
         }
-        public override async Task DecryptWithMode(string fileToDecrypt, string decryptResultFile)
+        public override Task DecryptWithModeAsync(string fileToDecrypt, string decryptResultFile, CancellationToken token = default)
         {
-            await Execute(fileToDecrypt, decryptResultFile, CryptOperation.DECRYPT);
+            return Execute(fileToDecrypt, decryptResultFile, CryptOperation.DECRYPT, token);
         }
 
-        public override async Task EncryptWithMode(string fileToEncrypt, string encryptResultFile)
+        public override Task EncryptWithModeAsync(string fileToEncrypt, string encryptResultFile, CancellationToken token = default)
         {
-            await Execute(fileToEncrypt, encryptResultFile, CryptOperation.ENCRYPT);
+            return Execute(fileToEncrypt, encryptResultFile, CryptOperation.ENCRYPT, token);
         }
 
         public void InsertHashInFile(FileDataLoader loader)
@@ -52,7 +53,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             return loader.GetHashValue();
         }
 
-        private async Task Execute(string inputFile, string outputFile, CryptOperation cryptOperation)
+        private async Task Execute(string inputFile, string outputFile, CryptOperation cryptOperation, CancellationToken token)
         {
             FileDataLoader loader = new(inputFile, outputFile);
             long hashCode = 0;
@@ -67,7 +68,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
                 {
                     _log.Error($"Text for decryption in {inputFile} is not compatible. Size % {_textBlockSizeInBytes} != 0.");
                     loader.CloseStreams();
-                    return;
+                    throw new DamagedFileException($"Text for decryption in {inputFile} is not compatible. Size % {_textBlockSizeInBytes} != 0.");
                 }
             }
 
@@ -76,6 +77,11 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
 
             Barrier barrier = new Barrier(ThreadsInfo.VALUE_OF_THREAD, (bar) =>
             {
+                if (token.IsCancellationRequested)
+                {
+                    loader.CloseStreams();
+                    return;
+                }
                 loader.ReloadTextBlockAndOutputInFile();
 
                 if (loader.FactTextBlockSize == 0) // There is nothing to read

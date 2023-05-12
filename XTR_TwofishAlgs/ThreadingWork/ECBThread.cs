@@ -19,8 +19,8 @@ namespace XTR_TWOFISH.ThreadingWork
         public override void Run(object obj)
         {
             CryptOperation cryptOperation = (CryptOperation)obj;
-            int posInTextBlock = _threadId * _textBlockSizeInBytes;
-            int realCypherPartSize = _textBlockSizeInBytes;
+            long posInTextBlock = _threadId * _textBlockSizeInBytes;
+            long realCypherPartSize = _textBlockSizeInBytes;
             while (_loader.FactTextBlockSize != 0)
             { 
                 while (posInTextBlock < _loader.FactTextBlockSize)
@@ -44,7 +44,6 @@ namespace XTR_TWOFISH.ThreadingWork
                 posInTextBlock = _threadId * _textBlockSizeInBytes;
                 _barrier.SignalAndWait();
             }
-
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using XTR_TwofishAlgs.MathBase.GaloisField;
 
 namespace XTR_TwofishAlgs.MathBase
 {

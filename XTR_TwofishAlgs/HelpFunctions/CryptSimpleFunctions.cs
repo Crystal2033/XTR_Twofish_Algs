@@ -86,7 +86,7 @@ namespace XTR_TwofishAlgs.HelpFunctions
             }
         }
 
-        public static int GetPureTextWithoutPaddingSize(ref byte[] checkingBytes, FileDataLoader loader, int curTextPos)
+        public static int GetPureTextWithoutPaddingSize(ref byte[] checkingBytes, FileDataLoader loader, long curTextPos)
         {
             int realCypherPartSize = CryptConstants.TWOFISH_PART_TEXT_BYTES;
 
@@ -323,9 +323,9 @@ namespace XTR_TwofishAlgs.HelpFunctions
             }
         }
 
-        public static void PKCS7Padding(byte[] bytes, int actualSize)
+        public static void PKCS7Padding(byte[] bytes, long actualSize)
         {
-            for (int i = actualSize; i < CryptConstants.TWOFISH_PART_TEXT_BYTES; i++)
+            for (int i = (int)actualSize; i < CryptConstants.TWOFISH_PART_TEXT_BYTES; i++)
             {
                 bytes[i] = (byte)(CryptConstants.TWOFISH_PART_TEXT_BYTES - actualSize);
             }

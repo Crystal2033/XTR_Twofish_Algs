@@ -9,10 +9,10 @@ namespace XTR_TWOFISH.ThreadingWork
 	public sealed class FileDataLoader
 	{
 		public long TextReadSize {get; set;}
-		public static int TextBlockSize = 16384;
+		public static int TextBlockSize = 65536;
 		private byte[] _textBlock = null;
-		private int _factTextBlockSize;
-		public int FactTextBlockSize { get { return _factTextBlockSize; } set { _factTextBlockSize = value; } }
+		private long _factTextBlockSize;
+		public long FactTextBlockSize { get { return _factTextBlockSize; } set { _factTextBlockSize = value; } }
 			
 		public byte[] TextBlock
 		{
@@ -20,8 +20,8 @@ namespace XTR_TWOFISH.ThreadingWork
 			set { _textBlock = value; }
 		}
 
-		private int currentPosInFile;
-		public int CurrentPosInFile { get => currentPosInFile; set => currentPosInFile = value; }
+		private long currentPosInFile;
+		public long CurrentPosInFile { get => currentPosInFile; set => currentPosInFile = value; }
 		private BinaryReader _fileReadFrom;
 		private BinaryWriter _fileWriteTo;
 
@@ -47,7 +47,7 @@ namespace XTR_TWOFISH.ThreadingWork
 
 		public void InsertHashValue(long hashValue)
 		{
-			_fileWriteTo.Write(hashValue);
+            _fileWriteTo.Write(hashValue);
 		}
 
         public long GetHashValue()
@@ -75,7 +75,7 @@ namespace XTR_TWOFISH.ThreadingWork
         {
 			if(_factTextBlockSize != 0)
 			{
-                _fileWriteTo.Write(TextBlock, 0, _factTextBlockSize);
+                _fileWriteTo.Write(TextBlock, 0, (int)_factTextBlockSize);
 			}
         }
     }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using XTR_TWOFISH.CryptInterfaces;
 using XTR_TWOFISH.CypherEnums;
 using XTR_TWOFISH.ThreadingWork;
+using XTR_TwofishAlgs.Exceptions;
 
 namespace XTR_TWOFISH.CypherModes.ModesImplementation
 {
@@ -19,17 +20,17 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
         {
 
         }
-        public override async Task DecryptWithMode(string fileToDecrypt, string decryptResultFile)
+        public override async Task DecryptWithModeAsync(string fileToDecrypt, string decryptResultFile, CancellationToken token)
         {
-            await Execute(fileToDecrypt, decryptResultFile, CryptOperation.DECRYPT);
+            await Execute(fileToDecrypt, decryptResultFile, CryptOperation.DECRYPT, token);
         }
 
-        public override async Task EncryptWithMode(string fileToEncrypt, string encryptResultFile)
+        public override async Task EncryptWithModeAsync(string fileToEncrypt, string encryptResultFile, CancellationToken token)
         {
-            await Execute(fileToEncrypt, encryptResultFile, CryptOperation.ENCRYPT);
+            await Execute(fileToEncrypt, encryptResultFile, CryptOperation.ENCRYPT, token);
         }
 
-        private async Task Execute(string inputFile, string outputFile, CryptOperation cryptOperation)
+        private async Task Execute(string inputFile, string outputFile, CryptOperation cryptOperation, CancellationToken token)
         {
             FileDataLoader loader = new(inputFile, outputFile);
             if(cryptOperation == CryptOperation.DECRYPT)
@@ -38,7 +39,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
                 {
                     _log.Error($"Text for decryption in {inputFile} is not compatible. Size % {_textBlockSizeInBytes} != 0.");
                     loader.CloseStreams();
-                    return;
+                    throw new DamagedFileException($"Text for decryption in {inputFile} is not compatible. Size % {_textBlockSizeInBytes} != 0.");
                 }
             }
 
@@ -47,6 +48,11 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
 
             Barrier barrier = new Barrier(ThreadsInfo.VALUE_OF_THREAD, (bar) =>
             {
+                if (token.IsCancellationRequested)
+                {
+                    loader.CloseStreams();
+                    return;
+                }
                 loader.ReloadTextBlockAndOutputInFile();
 
                 if (loader.FactTextBlockSize == 0) // There is nothing to read
@@ -56,7 +62,6 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
                     {
                         ecbThreads[i].SetThreadToStartPosition();
                     }
-                    //Wake up main thread
                 }
             });
 
@@ -72,7 +77,6 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
                 var task = ecbThreads[i];
                 tasks.Add(Task.Run(() =>
                 {
-                    
                     task.Run(cryptOperation);
                 }));
             }

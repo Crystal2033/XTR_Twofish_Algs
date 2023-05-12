@@ -150,11 +150,11 @@ namespace XTR_TwofishAlgs.XTR
             }
             
         }
-        public TripleValsInGFP2 SFunction(BigInteger n, GFP2.Polynom1DegreeCoeffs c)
+        public TripleValsInGFP2 SFunction(BigInteger n, GFP2.Polynom1DegreeCoeffs c, bool isNegative=false)
         {
             if (n < 0)
             {
-                return SFunction(-n, c);
+                return SFunction(-n, c, true);
             }
 
             List<TripleValsInGFP2> SkList = new();
@@ -209,6 +209,12 @@ namespace XTR_TwofishAlgs.XTR
                 }
             }
 
+            if (isNegative)
+            {
+                SkList[SkList.Count - 1].First = galoisFieldP2.PowP(SkList[SkList.Count - 1].First);
+                SkList[SkList.Count - 1].Second = galoisFieldP2.PowP(SkList[SkList.Count - 1].Second);
+                SkList[SkList.Count - 1].Third = galoisFieldP2.PowP(SkList[SkList.Count - 1].Third);
+            }
             return SkList[SkList.Count - 1];
         }
     }

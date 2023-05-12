@@ -9,6 +9,7 @@ using XTR_TWOFISH.CryptInterfaces;
 using XTR_TWOFISH.CypherEnums;
 using XTR_TWOFISH.HelpFunctionsAndData;
 using XTR_TWOFISH.ThreadingWork;
+using XTR_TwofishAlgs.Exceptions;
 using XTR_TwofishAlgs.HelpFunctions;
 
 namespace XTR_TWOFISH.CypherModes.ModesImplementation
@@ -24,7 +25,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             _initVector = initVector;
         }
 
-        public override async Task DecryptWithMode(string fileToDecrypt, string decryptResultFile)
+        public override async Task DecryptWithModeAsync(string fileToDecrypt, string decryptResultFile, CancellationToken token)
         {
             FileDataLoader loader = new(fileToDecrypt, decryptResultFile);
             _prevEncryptedTextBlock = (byte[])loader.TextBlock.Clone();
@@ -34,7 +35,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             {
                 _log.Error($"Text for decryption in {fileToDecrypt} is not compatible. Size % {_textBlockSizeInBytes} != 0.");
                 loader.CloseStreams();
-                return;
+                throw new DamagedFileException($"Text for decryption in {fileToDecrypt} is not compatible. Size % {_textBlockSizeInBytes} != 0.");
             }
 
 
@@ -42,6 +43,11 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
 
             Barrier barrier = new Barrier(ThreadsInfo.VALUE_OF_THREAD, (bar) =>
             {
+                if (token.IsCancellationRequested)
+                {
+                    loader.CloseStreams();
+                    return;
+                }
                 _prevEncryptedTextBlock = (byte[])_currEncryptedTextBlock.Clone();
                 loader.ReloadTextBlockAndOutputInFile();
                 _currEncryptedTextBlock = (byte[])loader.TextBlock.Clone();
@@ -79,7 +85,7 @@ namespace XTR_TWOFISH.CypherModes.ModesImplementation
             loader.CloseStreams();
         }
 
-        public override async Task EncryptWithMode(string fileToEncrypt, string encryptResultFile)
+        public override async Task EncryptWithModeAsync(string fileToEncrypt, string encryptResultFile, CancellationToken token)
         {
             FileDataLoader loader = new(fileToEncrypt, encryptResultFile);
             int curPosInTextBlock;

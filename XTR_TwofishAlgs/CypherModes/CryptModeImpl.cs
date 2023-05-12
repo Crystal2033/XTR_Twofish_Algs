@@ -19,10 +19,10 @@ namespace XTR_TWOFISH.CypherModes
             _cryptAlgorithm = cryptAlgorithm;
             _textBlockSizeInBytes = textBlockSizeBytes;
         }
-        public abstract Task DecryptWithMode(string fileToDecrypt, string decryptResultFile);
+        public abstract Task DecryptWithModeAsync(string fileToDecrypt, string decryptResultFile, CancellationToken token = default);
 
 
-        public abstract Task EncryptWithMode(string fileToEncrypt, string encryptResultFile);
+        public abstract Task EncryptWithModeAsync(string fileToEncrypt, string encryptResultFile, CancellationToken token = default);
 
     }
 }

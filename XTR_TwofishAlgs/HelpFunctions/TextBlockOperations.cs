@@ -11,10 +11,10 @@ namespace XTR_TWOFISH.HelpFunctionsAndData
 {
     public static class TextBlockOperations
     {
-        public static byte[] GetPartOfTextBlock(int posInTextBlock, FileDataLoader loader, int textBlockSize)
+        public static byte[] GetPartOfTextBlock(long posInTextBlock, FileDataLoader loader, int textBlockSize)
         {
             byte[] partOfTextBlock = new byte[textBlockSize];
-            int readTextSize = (loader.FactTextBlockSize - posInTextBlock < textBlockSize) ? loader.FactTextBlockSize - posInTextBlock : partOfTextBlock.Length;
+            long readTextSize = (loader.FactTextBlockSize - posInTextBlock < textBlockSize) ? loader.FactTextBlockSize - posInTextBlock : partOfTextBlock.Length;
             for (int i = 0; i < readTextSize; i++)
             {
                 partOfTextBlock[i] = loader.TextBlock[posInTextBlock + i];
@@ -34,9 +34,9 @@ namespace XTR_TWOFISH.HelpFunctionsAndData
             return partOfTextBlock;
         }
 
-        public static void InsertPartInTextBlock(int posInTextBlock, byte[] source, int sourceSize, FileDataLoader loader)
+        public static void InsertPartInTextBlock(long posInTextBlock, byte[] source, long sourceSize, FileDataLoader loader)
         {
-            for (int i = 0; i < sourceSize; i++)
+            for (long i = 0; i < sourceSize; i++)
             {
                 loader.TextBlock[posInTextBlock + i] = source[i];
             }

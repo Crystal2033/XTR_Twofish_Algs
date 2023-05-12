@@ -86,6 +86,7 @@ namespace XTR_TwofishAlgs.MathBase
                     
             } while (!MillerRabinTestIsPrime(q, 10));
 
+            _log.Info($"R = {r.GetBitLength()}");
             BigInteger k;
             BigInteger bitsForK = BigInteger.Pow(2, minSizePBits - minSizeQBits);
             BigInteger p;
@@ -93,7 +94,7 @@ namespace XTR_TwofishAlgs.MathBase
             {
                 using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
                 {
-                    k = RandomInRange(rng, bitsForK, bitsForK * 2 - 1);
+                    k = RandomInRange(rng, bitsForK - 1, bitsForK * 4 - 1);
                     p = r + k * q;
                     //_log.Info($"P = {p.GetBitLength()}");
                 }
