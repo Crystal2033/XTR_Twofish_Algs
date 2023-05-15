@@ -14,7 +14,7 @@ Symmetric cyphering with modes.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Crystal2033/XTR_Twofish_Algs</RepositoryUrl>
     <PackageTags>Cryptography, XTR, TwoFish, cyphering modes, symmetric cryptography, asymmetric cryptography</PackageTags>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +26,7 @@ Symmetric cyphering with modes.</Description>
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="System.Management" Version="7.0.1" />
   </ItemGroup>
 
 </Project>

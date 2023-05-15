@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
 using System.Reflection;
+using System.Management;
 using System.Security.Cryptography;
 using XTR_TWOFISH.CryptInterfaces;
 using XTR_TWOFISH.CypherEnums;
@@ -76,6 +77,7 @@ internal class Program
 
             DemonstrationCypher.DemonstrateMode(MAINPATH + CHILDPATH + FILENAME, MAINPATH + CHILDPATH + @"EncryptRDH.txt",
                 MAINPATH + CHILDPATH + @"DecryptRDH.txt", XTR_TWOFISH.CypherEnums.CypherMode.RDH, mainKey, initVector).Wait();
+
 
             //byte[] cipher = feistelKernel.Execute(plainText, XTR_TWOFISH.CypherEnums.CryptOperation.ENCRYPT);
             //CryptSimpleFunctions.ShowHexView(cipher, "CT");
