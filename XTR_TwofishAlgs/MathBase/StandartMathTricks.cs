@@ -72,7 +72,6 @@ namespace XTR_TwofishAlgs.MathBase
                 return GeneratePQ(minSizeQBits, minSizePBits);
             }
             BigInteger minValueForQ = BigInteger.Pow(2, minSizeQBits / 2 - 1); //Because in q gen r*r. Order*2
-            _log.Info($"minValueForQ = {minValueForQ.GetBitLength()}");
 
             BigInteger r;
             BigInteger q;
@@ -86,7 +85,6 @@ namespace XTR_TwofishAlgs.MathBase
                     
             } while (!MillerRabinTestIsPrime(q, 10));
 
-            _log.Info($"R = {r.GetBitLength()}");
             BigInteger k;
             BigInteger bitsForK = BigInteger.Pow(2, minSizePBits - minSizeQBits);
             BigInteger p;
@@ -96,12 +94,8 @@ namespace XTR_TwofishAlgs.MathBase
                 {
                     k = RandomInRange(rng, bitsForK - 1, bitsForK * 4 - 1);
                     p = r + k * q;
-                    //_log.Info($"P = {p.GetBitLength()}");
                 }
             } while ((!MillerRabinTestIsPrime(p, 10)) || (p % 3 != 2));
-
-            _log.Info($"P = {p.GetBitLength()}");
-            _log.Info($"Q = {q.GetBitLength()}");
 
             return (p, q);
         }
@@ -129,19 +123,6 @@ namespace XTR_TwofishAlgs.MathBase
             // повторить k раз
             for (int i = 0; i < k; i++)
             {
-                // выберем случайное целое число a в отрезке [2, n − 2]
-                //RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-
-                //byte[] _a = new byte[n.ToByteArray().LongLength];
-
-                //BigInteger a;
-
-                //do
-                //{
-                //    rng.GetBytes(_a);
-                //    a = new BigInteger(_a);
-                //}
-                //while (a < 2 || a >= n - 2);
                 using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
                 {
                     BigInteger a = RandomInRange(rng, 2, n - 2);

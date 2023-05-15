@@ -53,32 +53,6 @@ namespace XTR_TwofishAlgs.XTR
             galoisFieldP2 = new GFP2(p);
         }
 
-        //private GFP2.Polynom1DegreeCoeffs GetC2n(GFP2.Polynom1DegreeCoeffs cn)
-        //{
-        //    return galoisFieldP2.Substract(galoisFieldP2.Pow2(cn), galoisFieldP2.Mult(2, galoisFieldP2.PowP(cn)));
-        //}
-
-        //private GFP2.Polynom1DegreeCoeffs GetCnPlus2(GFP2.Polynom1DegreeCoeffs cn_1, GFP2.Polynom1DegreeCoeffs cn, GFP2.Polynom1DegreeCoeffs cnPlus1,
-        //    GFP2.Polynom1DegreeCoeffs c)
-        //{
-
-        //    return galoisFieldP2.Add(galoisFieldP2.Substract(galoisFieldP2.Mult(c, cnPlus1), galoisFieldP2.Mult(galoisFieldP2.PowP(c), cn)), cn_1);
-        //}
-
-        //private GFP2.Polynom1DegreeCoeffs GetC2n_1(GFP2.Polynom1DegreeCoeffs cn_1, GFP2.Polynom1DegreeCoeffs cn, GFP2.Polynom1DegreeCoeffs cnPlus1,
-        //    GFP2.Polynom1DegreeCoeffs c)
-        //{
-        //    return galoisFieldP2.Add(galoisFieldP2.Substract(galoisFieldP2.Mult(cn_1, cn),
-        //        galoisFieldP2.Mult(galoisFieldP2.PowP(c), galoisFieldP2.PowP(cn))), galoisFieldP2.PowP(cnPlus1));
-        //}
-
-        //private GFP2.Polynom1DegreeCoeffs GetC2nPlus1(GFP2.Polynom1DegreeCoeffs cn_1, GFP2.Polynom1DegreeCoeffs cn, GFP2.Polynom1DegreeCoeffs cnPlus1,
-        //    GFP2.Polynom1DegreeCoeffs c)
-        //{
-        //    return galoisFieldP2.Add(galoisFieldP2.Substract(galoisFieldP2.Mult(cnPlus1, cn),
-        //        galoisFieldP2.Mult(c, galoisFieldP2.PowP(cn))), galoisFieldP2.PowP(cn_1));
-        //}
-
         private GFP2.Polynom1DegreeCoeffs GetC2n(int n, List<TripleValsInGFP2> sVals)
         {
             if(n > sVals.Count)

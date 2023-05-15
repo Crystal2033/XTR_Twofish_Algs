@@ -77,12 +77,12 @@ namespace XTR_TWOFISH.FeistelImplementation
             }
 
             OutputWhitenning(slicedBlocks, cryptStatus);
-            transformOutputCryptText(slicedBlocks);
+            TransformOutputCryptText(slicedBlocks);
 
             return CryptSimpleFunctions.ConcatPureBytes(slicedBlocks);
         }
 
-        private void transformOutputCryptText(List<byte[]> cryptText)
+        private void TransformOutputCryptText(List<byte[]> cryptText)
         {
             for(int i = 0; i < cryptText.Count; i++)
             {

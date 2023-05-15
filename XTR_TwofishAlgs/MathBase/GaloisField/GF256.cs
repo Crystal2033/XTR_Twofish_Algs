@@ -133,7 +133,6 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
                 copiedRight.Value >>= 1;
             }
             return new GF256(res);
-            //return new GF256(divideByColumn(res, (uint)polynom));
         }
         
     }

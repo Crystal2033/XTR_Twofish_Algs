@@ -122,7 +122,7 @@ namespace XTR_TwofishAlgs.TwoFish
         }
 
         
-        public static byte qFunctionGeneral(byte x, byte[,] tMatrix)//q1 is the same, but different tMatrix
+        public static byte qFunctionGeneral(byte x, byte[,] tMatrix)
         {
             byte a0 = (byte)(x / 16);
             byte b0 = (byte)(x % 16);

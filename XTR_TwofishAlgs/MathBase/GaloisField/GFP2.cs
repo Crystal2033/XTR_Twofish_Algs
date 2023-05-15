@@ -53,8 +53,6 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         {
             _primaryNumber = p;
             _orderValue = _primaryNumber * _primaryNumber;
-            //_values = new Polynom1DegreeCoeffs[_orderValue];
-            //CreateGaloisFieldP2();
         }
 
         public Polynom1DegreeCoeffs GenerateRandomValue()
@@ -72,7 +70,6 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         {
             BigInteger newFirstValue = ModGFP(x.Second * y.Second - x.First * y.Second - x.Second * y.First);
             BigInteger newSecondValue = ModGFP(x.First * y.First - x.First * y.Second - x.Second * y.First);
-            //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
 
@@ -80,7 +77,6 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         {
             BigInteger newFirstValue = ModGFP(coeff*x.First);
             BigInteger newSecondValue = ModGFP(coeff * x.Second);
-            //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
 
@@ -88,7 +84,6 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         {
             BigInteger newFirstValue = ModGFP(x.First + y.First);
             BigInteger newSecondValue = ModGFP(x.Second + y.Second);
-            //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
 
@@ -96,7 +91,6 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         {
             BigInteger newFirstValue = ModGFP(x.First - y.First);
             BigInteger newSecondValue = ModGFP(x.Second - y.Second);
-            //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
 
@@ -104,7 +98,6 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         {
             BigInteger newFirstValue = ModGFP(x.Second * (x.Second - 2 * x.First));
             BigInteger newSecondValue = ModGFP(x.First * (x.First - 2*x.Second));
-            //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }
 
@@ -122,7 +115,6 @@ namespace XTR_TwofishAlgs.MathBase.GaloisField
         {
             BigInteger newFirstValue = ModGFP(z.First*(y.First - x.Second - y.Second) + z.Second*(x.Second - x.First + y.Second));
             BigInteger newSecondValue = ModGFP(z.First*(x.First- x.Second + y.First) + z.Second*(y.Second - x.First - y.First));
-            //_log.Info($"({newFirstValue},{newSecondValue})");
             return new Polynom1DegreeCoeffs(newFirstValue, newSecondValue);
         }        
     }
